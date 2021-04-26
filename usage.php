@@ -13,6 +13,11 @@ $li = new LiveIntentClient([
 
 $lineItem = $li->lineItems->find(192431);
 
-dd($lineItem->status());
+dd($lineItem->id, $lineItem->refId);
 
-dd($lineItem->id);
+// {
+//   "access_token": "kIXI7TbqPccwusQjaW/yutbr/gv6+xyy",
+//   "token_type": "Bearer",
+//   "expires_in": 3599,
+//   "id_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQwOTAsImV4cCI6MTYxOTQ2Mjk4NywiaWF0IjoxNjE5NDU5Mzg3LCJhdWQiOiJhcmkiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjMwMDAifQ.N3VNInq5YtdVHtbD8XKp0zmTOtdcpJAa42A4-Ymgqn4"
+// }
