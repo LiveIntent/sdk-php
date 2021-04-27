@@ -2,6 +2,7 @@
 
 namespace LiveIntent\SDK\Services;
 
+use LiveIntent\SDK\Exceptions\InvalidRequestException;
 use LiveIntent\SDK\Util\ApiRequestOptions;
 use LiveIntent\SDK\LiveIntentClientInterface;
 
@@ -53,11 +54,42 @@ abstract class AbstractService
     protected function request(string $method, string $path, string $cls, array $params = [], ?ApiRequestOptions $opts = null)
     {
         $response = $this->getClient()->request($method, $path, $params, $opts);
+        $this->handleErrors($response);
 
         if ($response->failed()) {
+            dump($response->json());
             // do something
         }
 
+        // $response->throw();
+
         return new $cls($response->json()['output']);
+    }
+
+    /**
+     *
+     */
+    private function handleErrors($response)
+    {
+        $error = $this->findApiError($response);
+
+        if ($error) {
+            throw $error;
+        }
+    }
+
+    /**
+     *
+     */
+    private function findApiError($response)
+    {
+        if ($response->successful()) {
+            return;
+        }
+
+        switch ($response->status()) {
+            case 400:
+                return InvalidRequestException::factory($response);
+        }
     }
 }

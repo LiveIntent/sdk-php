@@ -3,6 +3,7 @@
 namespace Tests\Services;
 
 use LiveIntent\SDK\ApiResources\LineItem;
+use LiveIntent\SDK\Exceptions\InvalidRequestException;
 use LiveIntent\SDK\Services\LineItemService;
 
 class LineItemServiceTest extends ServiceTestCase
@@ -26,6 +27,20 @@ class LineItemServiceTest extends ServiceTestCase
         $lineItem = $this->service->create([
             'name' => 'SDK Test',
             'status' => 'paused',
+            'budget' => 0,
+            'pacing' => 'even',
+            'campaign' => 'fef81b06365911e7943622000a974651',
+        ]);
+
+        $this->assertInstanceOf(LineItem::class, $lineItem);
+    }
+
+    public function testWhatHappensWhenThereIsAnError()
+    {
+        $this->expectException(InvalidRequestException::class);
+
+        $lineItem = $this->service->create([
+            'name' => 'SDK Test',
             'budget' => 0,
             'pacing' => 'even',
             'campaign' => 'fef81b06365911e7943622000a974651',
