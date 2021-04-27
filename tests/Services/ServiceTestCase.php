@@ -3,6 +3,7 @@
 namespace Tests\Services;
 
 use Tests\TestCase;
+use LiveIntent\SDK\LiveIntentClient;
 use LiveIntent\SDK\Services\AbstractService;
 
 class ServiceTestCase extends TestCase
@@ -26,6 +27,11 @@ class ServiceTestCase extends TestCase
     {
         parent::setUp();
 
-        $this->service = new $this->serviceClass();
+        $this->service = new $this->serviceClass(
+            new LiveIntentClient([
+                'client_id' => 'ari',
+                'client_secret' => '93f129a60f17264feab81a260256f13e'
+            ])
+        );
     }
 }

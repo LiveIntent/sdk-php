@@ -23,8 +23,8 @@ class LineItemService extends AbstractService
     /**
      *
      */
-    public function findOrFail($id)
+    public function create($attributes)
     {
-        return $this->requestOrFail('get', "strategy/{$id}", LineItem::class);
+        return $this->request('post', "strategy", LineItem::class, $attributes);
     }
 }
