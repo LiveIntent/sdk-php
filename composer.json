@@ -17,6 +17,7 @@
         "nunomaduro/collision": "^5.4",
         "phpunit/phpunit": "^9.5",
         "ramsey/conventional-commits": "^1.1",
+        "spatie/phpunit-watcher": "^1.23",
         "symfony/var-dumper": "^5.2",
         "vimeo/psalm": "^4.7"
     },
@@ -34,6 +35,7 @@
         "psalm": "vendor/bin/psalm",
         "lint": "vendor/bin/php-cs-fixer fix",
         "test": "vendor/bin/phpunit",
+        "test-watch": "vendor/bin/phpunit-watcher watch",
         "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
     },
     "config": {

@@ -14,7 +14,7 @@ class LineItemService extends AbstractService
      */
     public function find($id): LineItem
     {
-        return $this->get('strategy', $id, LineItem::class);
+        return $this->request('get', "strategy/{$id}", LineItem::class);
     }
 
     /**
@@ -22,6 +22,6 @@ class LineItemService extends AbstractService
      */
     public function findOrFail($id): LineItem
     {
-        return $this->getOrFail('strategy', $id, LineItem::class);
+        return $this->requestOrFail('get', "strategy/{$id}", LineItem::class);
     }
 }
