@@ -2,14 +2,18 @@
 
 namespace LiveIntent\SDK;
 
+use LiveIntent\SDK\Services;
 use Illuminate\Http\Client\Factory;
-use LiveIntent\SDK\Services\LineItemService;
 
 class LiveIntentClient implements LiveIntentClientInterface
 {
-    public $lineItems;
-
     private $access_token;
+
+    protected static $classMap = [
+        'lineItems' => Services\LineItemService::class
+    ];
+
+    protected $services = [];
 
     /**
      * Create a new instance.
@@ -18,7 +22,24 @@ class LiveIntentClient implements LiveIntentClientInterface
      */
     public function __construct($attrs)
     {
-        $this->lineItems = new LineItemService($this);
+        //
+    }
+
+
+    /**
+     *
+     */
+    public function __get($name)
+    {
+        if (!\array_key_exists($name, static::$classMap)) {
+            return null;
+        }
+
+        if (!\array_key_exists($name, $this->services)) {
+            $this->services[$name] = new static::$classMap[$name]($this);
+        }
+
+        return $this->services[$name];
     }
 
     /**

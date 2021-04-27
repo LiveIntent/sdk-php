@@ -10,7 +10,7 @@ abstract class AbstractService
     private LiveIntentClientInterface $client;
 
     /**
-     * Create a new instance.
+     * Create a new service instance.
      *
      * @return void
      */
