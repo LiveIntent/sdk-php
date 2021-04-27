@@ -13,6 +13,7 @@ $li = new LiveIntentClient([
 
 $lineItem = $li->lineItems->find(192431);
 
+
 dd($lineItem->id, $lineItem->refId);
 
 // {
