@@ -3,6 +3,7 @@
 namespace LiveIntent\SDK\Services;
 
 use Illuminate\Http\Client\Factory;
+use LiveIntent\SDK\Exceptions\ResourceNotFoundException;
 
 abstract class AbstractService
 {
@@ -11,9 +12,28 @@ abstract class AbstractService
     private $expires_in = 0;
 
     /**
+     * Find an api resource by its primary key.
+     *
+     * @param  int|string  $id
+     * @return null|\LiveIntent\SDK\ApiResources\AbstractApiResource
+     */
+    abstract public function find($id);
+
+    /**
+     * Find an api resource by its primary key.
+     *
+     * @param  int|string  $id
+     * @return \LiveIntent\SDK\ApiResources\AbstractApiResource
+     *
+     * @throws \LiveIntent\SDK\Exceptions\ResourceNotFoundException
+     */
+    abstract public function findOrFail($id);
+
+
+    /**
      *
      */
-    public function request($method, $path)
+    protected function request($method, $path, $resource)
     {
         $factory = new Factory();
         $client = $factory->withOptions([
@@ -36,10 +56,31 @@ abstract class AbstractService
 
         }
 
-        return $client->send($method, $path, [
+        $response = $client->send($method, $path, [
             'headers' => [
                 'Authorization' => "Bearer {$this->access_token}"
             ]
         ]);
+
+        if ($response->ok()) {
+            return new $resource($response->json()['output']);
+        }
+
+        return null;
     }
+
+    /**
+     *
+     */
+    protected function requestOrFail($method, $path, $resource)
+    {
+        $resource = $this->request($method, $path, $resource);
+
+        if (!$resource) {
+            throw new ResourceNotFoundException();
+        }
+
+        return $resource;
+    }
+
 }

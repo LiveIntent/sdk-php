@@ -10,9 +10,12 @@ use LiveIntent\SDK\ApiResources\LineItem;
 class LineItemService extends AbstractService
 {
     /**
+     * Find an api resource by its primary key.
      *
+     * @param  int|string  $id
+     * @return null|\LiveIntent\SDK\ApiResources\LineItem
      */
-    public function find($id): LineItem
+    public function find($id)
     {
         return $this->request('get', "strategy/{$id}", LineItem::class);
     }
@@ -20,7 +23,7 @@ class LineItemService extends AbstractService
     /**
      *
      */
-    public function findOrFail($id): LineItem
+    public function findOrFail($id)
     {
         return $this->requestOrFail('get', "strategy/{$id}", LineItem::class);
     }
