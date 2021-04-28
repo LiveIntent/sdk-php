@@ -23,7 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-            "LiveIntent\\SDK\\": "src"
+            "LiveIntent\\": "src"
         }
     },
     "autoload-dev": {

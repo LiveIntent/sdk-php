@@ -1,6 +1,6 @@
 <?php
 
-namespace LiveIntent\SDK\Exceptions;
+namespace LiveIntent\Exceptions;
 
 class InvalidRequestException extends AbstractRequestException
 {

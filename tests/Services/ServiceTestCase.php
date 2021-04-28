@@ -3,8 +3,8 @@
 namespace Tests\Services;
 
 use Tests\TestCase;
-use LiveIntent\SDK\LiveIntentClient;
-use LiveIntent\SDK\Services\AbstractService;
+use LiveIntent\LiveIntentClient;
+use LiveIntent\Services\AbstractService;
 
 class ServiceTestCase extends TestCase
 {
@@ -26,6 +26,8 @@ class ServiceTestCase extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        // TODO
 
         $this->service = new $this->serviceClass(
             new LiveIntentClient([

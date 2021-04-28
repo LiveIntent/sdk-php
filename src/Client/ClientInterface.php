@@ -1,8 +1,8 @@
 <?php
 
-namespace LiveIntent\SDK;
+namespace LiveIntent\Client;
 
-interface LiveIntentClientInterface
+interface ClientInterface
 {
     /**
      * TODO

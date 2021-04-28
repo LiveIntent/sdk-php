@@ -1,6 +1,6 @@
 <?php
 
-namespace LiveIntent\SDK\Services;
+namespace LiveIntent\Services;
 
 class ServiceFactory
 {

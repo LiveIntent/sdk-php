@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-use LiveIntent\SDK\LiveIntentClient;
-use LiveIntent\SDK\ApiResources\LineItem;
+use LiveIntent\LineItem;
+use LiveIntent\LiveIntentClient;
 
 class ExampleTest extends TestCase
 {

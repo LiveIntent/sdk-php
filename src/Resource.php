@@ -1,8 +1,8 @@
 <?php
 
-namespace LiveIntent\SDK\ApiResources;
+namespace LiveIntent;
 
-abstract class AbstractApiResource
+class Resource
 {
     protected $attributes;
 
