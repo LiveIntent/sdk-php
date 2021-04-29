@@ -2,7 +2,7 @@
 
 require './vendor/autoload.php';
 
-use LiveIntent\SDK\LiveIntentClient;
+use LiveIntent\LiveIntentClient;
 use LiveIntent\Services\LineItemService;
 
 // Find example

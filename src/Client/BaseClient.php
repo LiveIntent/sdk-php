@@ -2,45 +2,69 @@
 
 namespace LiveIntent\Client;
 
-use Illuminate\Http\Client\Factory;
 use LiveIntent\Client\ClientInterface;
+use Illuminate\Http\Client\Factory as IlluminateClient;
 
-class BaseClient implements ClientInterface
+class BaseClient extends IlluminateClient implements ClientInterface
 {
     private $access_token;
+
+    private $clientId;
+    private $clientSecret;
+
+    private $baseUrl = 'http://localhost:33001'; // TODO change
+
+    /**
+     * Create a new instance.
+     *
+     * @return void
+     */
+    public function __construct(array $options = [])
+    {
+        $this->clientId = $options['client_id'] ?? null;
+        $this->clientSecret = $options['client_secret'] ?? null;
+        $this->baseUrl = $options['base_url'] ?? $this->baseUrl;
+
+        parent::__construct();
+    }
+
+    private function usesClientCredentials()
+    {
+        return $this->clientId && $this->clientSecret;
+    }
+
+    /**
+     *
+     */
+    public function obtainAccessToken()
+    {
+        $factory = new IlluminateClient();
+        $client = $factory->withOptions([
+            'base_uri' => $this->baseUrl
+        ]);
+
+        $response = $client->asForm()->post('oauth/token', [
+            'client_id' => $this->clientId,
+            'client_secret' => $this->clientSecret,
+            'grant_type' => 'client_credentials',
+            'scope' => 'openid'
+        ]);
+
+        return $response->json()['access_token'];
+    }
 
     /**
      *
      */
     public function request($method, $path, $data = null, $opts = null)
     {
-        $factory = new Factory();
-        $client = $factory->withOptions([
-            'base_uri' => 'http://localhost:33001',
-        ]);
-
-        $client_id = 'ari';
-        $client_secret =  '93f129a60f17264feab81a260256f13e';
-
         if (!$this->access_token) {
-            $response = $client->asForm()->post('oauth/token', [
-                'client_id' => $client_id,
-                'client_secret' => $client_secret,
-                'grant_type' => 'client_credentials',
-                'scope' => 'openid'
-            ]);
-            $this->access_token = $response->json()['access_token'];
-
-            dump($this->access_token);
-
+            $this->access_token = $this->obtainAccessToken();
         }
 
-        $factory = new Factory();
-        $client = $factory->withOptions([
-            'base_uri' => 'http://localhost:33001',
-        ]);
+        $req = $this->newPendingRequest()->baseUrl($this->baseUrl);
 
-        $response = $client->send($method, $path, [
+        $response = $req->send($method, $path, [
             'headers' => [
 
                 'Authorization' => "Bearer {$this->access_token}",
