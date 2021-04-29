@@ -7,14 +7,27 @@ use LiveIntent\Client\BaseClient;
 
 class LiveIntentClient extends BaseClient
 {
+    /**
+     * A mapping of getters to service classes. This allows developers
+     * to access individual services directly as getters on the
+     * client, rather than instantiating every single service.
+     */
     protected static $classMap = [
         'lineItems' => Services\LineItemService::class
     ];
 
+    /**
+     * The already instantiated services.
+     *
+     * @var array
+     */
     protected $services = [];
 
     /**
+     * Dynamically resolve a service instance.
      *
+     * @param string $name
+     * @return null|\LiveIntent\Services\AbstractService
      */
     public function __get($name)
     {

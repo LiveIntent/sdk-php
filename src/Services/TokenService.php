@@ -2,6 +2,7 @@
 
 namespace LiveIntent\Services;
 
+use Carbon\Carbon;
 use Illuminate\Http\Client\Factory as Http;
 
 class TokenService
@@ -11,7 +12,7 @@ class TokenService
      *
      * @var string
      */
-    private $baseUrl = 'http://localhost:33001'; // TODO change
+    private $baseUrl;
 
     /**
      * The default number of times a request should be retried.
@@ -65,6 +66,20 @@ class TokenService
     private $tokenType = 'Bearer';
 
     /**
+     * The expiration timestamp of the current token.
+     *
+     * @var \Carbon\Carbon
+     */
+    private $expiresAt;
+
+    /**
+     * The number of seconds before expiration to refresh tokens.
+     *
+     * @var int
+     */
+    private $bufferSeconds;
+
+    /**
      * Create a new instance.
      *
      * @return void
@@ -106,13 +121,14 @@ class TokenService
     /**
      * Obtain a fresh set of tokens.
      *
+     * @param null|array $opts
      * @return void
      */
-    public function refreshTokens()
+    public function refreshTokens($opts = [])
     {
         $response = $this->http
             ->baseUrl($this->baseUrl)
-            ->retry($this->tries, $this->retryDelay)
+            ->retry($opts['tries'] ?? $this->tries, $opts['retryDelay'] ?? $this->retryDelay)
             ->asForm()
             ->post('oauth/token', [
                 'client_id' => $this->clientId,
@@ -125,14 +141,20 @@ class TokenService
 
         $this->accessToken = $payload['access_token'];
         $this->tokenType = $payload['token_type'];
-        // $this->expiresAt = $payload['token_type'];
+        $this->expiresAt = Carbon::now()->addSeconds($payload['expires_in'] - $this->bufferSeconds);
     }
 
     /**
+     * Check if a new tokens should be generated.
      *
+     * @return bool
      */
     private function needsNewTokens()
     {
-        return true;
+        if (!$this->accessToken) {
+            return true;
+        }
+
+        return $this->expiresAt->isPast();
     }
 }

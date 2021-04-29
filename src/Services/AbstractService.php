@@ -146,7 +146,7 @@ abstract class AbstractService
      * @return \LiveIntent\Resource|\Illuminate\Support\Collection
      */
     private function morphResponse(Response $response)
-    {
+    {    // TODO - handle multiple, handle other structures
         return $this->newResource($response->json()['output']);
     }
 
@@ -179,6 +179,7 @@ abstract class AbstractService
     private function newResource($body)
     {
         $class = static::OBJECT_CLASS;
+
         return new $class($body);
     }
 

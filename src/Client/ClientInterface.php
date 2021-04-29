@@ -5,7 +5,13 @@ namespace LiveIntent\Client;
 interface ClientInterface
 {
     /**
-     * TODO
+     * Issue a request to the api.
+     *
+     * @param string $method
+     * @param string $path
+     * @param null|array $data
+     * @param null|array $opts
+     * @return \Illuminate\Http\Client\Response
      */
-    public function request($method, $path, $data = null, $opts = null);
+    public function request($method, $path, $data = null, $opts = []);
 }
