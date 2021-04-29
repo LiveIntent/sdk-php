@@ -2,6 +2,7 @@
 
 namespace Tests\Services;
 
+use LiveIntent\Exceptions\InvalidArgumentException;
 use LiveIntent\LineItem;
 use LiveIntent\Services\LineItemService;
 use LiveIntent\Exceptions\InvalidRequestException;
@@ -72,6 +73,13 @@ class LineItemServiceTest extends ServiceTestCase
 
         $this->assertInstanceOf(LineItem::class, $lineItem);
         $this->assertEquals('Updated again', $lineItem->name);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $lineItem = $this->service->update([
+            'version' => $lineItem->version,
+            'name' => 'should break'
+        ]);
     }
 
     public function testWhatHappensWhenThereIsAnError()

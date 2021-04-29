@@ -7,6 +7,7 @@ use Illuminate\Http\Client\Response;
 use LiveIntent\Client\RequestOptions;
 use LiveIntent\Client\ClientInterface;
 use LiveIntent\Exceptions\InvalidRequestException;
+use LiveIntent\Exceptions\InvalidArgumentException;
 
 abstract class AbstractService
 {
@@ -44,13 +45,13 @@ abstract class AbstractService
      */
     public function create($attributes)
     {
-        $data = (array) $attributes;
+        $payload = (array) $attributes;
 
         if ($attributes instanceof Resource) {
-            $data = $attributes->getAttributes();
+            $payload = $attributes->getAttributes();
         }
 
-        return $this->request('post', $this->baseUrl(), $data);
+        return $this->request('post', $this->baseUrl(), $payload);
     }
 
     /**
@@ -61,15 +62,19 @@ abstract class AbstractService
      */
     public function update($attributes)
     {
-        $data = (array) $attributes;
-        $id = $data['id'] ?? null;
+        $payload = (array) $attributes;
+        $id = $payload['id'] ?? null;
 
         if ($attributes instanceof Resource) {
             $id = $attributes->id;
-            $data = array_merge($attributes->getDirty(), ['version' => $attributes->version]);
+            $payload = array_merge($attributes->getDirty(), ['version' => $attributes->version]);
         }
 
-        return $this->request('post', $this->resourceUrl($id), $data);
+        if ($id === null) {
+            throw InvalidArgumentException::factory($payload, 'Unable to find `id` for update operation');
+        }
+
+        return $this->request('post', $this->resourceUrl($id), $payload);
     }
 
     // /**
