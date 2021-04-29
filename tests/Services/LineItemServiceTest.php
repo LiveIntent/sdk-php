@@ -35,6 +35,34 @@ class LineItemServiceTest extends ServiceTestCase
         $this->assertInstanceOf(LineItem::class, $lineItem);
     }
 
+    public function testIsUpdateable()
+    {
+        $lineItem = $this->service->create([
+            'name' => 'SDK Test',
+            'status' => 'paused',
+            'budget' => 0,
+            'pacing' => 'even',
+            'campaign' => 'fef81b06365911e7943622000a974651',
+        ]);
+
+        $this->assertInstanceOf(LineItem::class, $lineItem);
+
+        $lineItem = $this->service->update([
+            'id' => $lineItem->id,
+            'version' => $lineItem->version,
+            'name' => 'SDK Test Updated'
+        ]);
+
+        $this->assertInstanceOf(LineItem::class, $lineItem);
+        $this->assertEquals('SDK Test Updated', $lineItem->name);
+
+        $lineItem->name = 'Updated again';
+        $lineItem = $this->service->update($lineItem);
+
+        $this->assertInstanceOf(LineItem::class, $lineItem);
+        $this->assertEquals('Updated again', $lineItem->name);
+    }
+
     public function testWhatHappensWhenThereIsAnError()
     {
         $this->expectException(InvalidRequestException::class);

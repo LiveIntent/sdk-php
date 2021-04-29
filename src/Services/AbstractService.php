@@ -2,6 +2,7 @@
 
 namespace LiveIntent\Services;
 
+use LiveIntent\Resource;
 use Illuminate\Http\Client\Response;
 use LiveIntent\Client\RequestOptions;
 use LiveIntent\Client\ClientInterface;
@@ -22,24 +23,44 @@ abstract class AbstractService
     }
 
     /**
+     * Find a resource by it's primary key.
+     *
+     * @param string|int $id
+     * @retrurn \LiveIntent\Resource
      */
     public function find($id)
     {
-        //
+        return $this->request('get', $this->resourceUrl($id));
     }
 
     /**
+     * Create a new resource.
+     *
+     * @param mixed $attributes
+     * @retrurn \LiveIntent\Resource
      */
     public function create($attributes)
     {
-        //
+        return $this->request('post', $this->classUrl(), $attributes);
     }
 
     /**
+     * Update an existing resource.
+     *
+     * @param mixed $attributes
+     * @retrurn \LiveIntent\Resource
      */
     public function update($attributes)
     {
-        //
+        $data = (array) $attributes;
+        $id = $data['id'] ?? null;
+
+        if ($attributes instanceof Resource) {
+            $id = $attributes->id;
+            $data = array_merge($attributes->getDirty(), ['version' => $attributes->version]);
+        }
+
+        return $this->request('post', $this->resourceUrl($id), $data);
     }
 
     /**
@@ -90,13 +111,38 @@ abstract class AbstractService
     /**
      * Make a request to the api.
      */
-    protected function request(string $method, string $path, string $cls, array $params = [], ?ApiRequestOptions $opts = null)
+    protected function request(string $method, string $path, array $params = [], ?ApiRequestOptions $opts = null)
     {
         $response = $this->getClient()->request($method, $path, $params, $opts);
 
         $this->handleErrors($response);
 
-        return new $cls($response->json()['output']);
+        return $this->newResource($response->json()['output']);
+    }
+
+    /**
+     *
+     */
+    public function resourceUrl($id)
+    {
+        return sprintf("%s/$id", static::API_URL);
+    }
+
+    /**
+     *
+     */
+    public function classUrl()
+    {
+        return static::API_URL;
+    }
+
+    /**
+     *
+     */
+    private function newResource($body)
+    {
+        $cls = static::OBJECT_TYPE;
+        return new $cls($body);
     }
 
     /**
@@ -119,6 +165,9 @@ abstract class AbstractService
         switch ($response->status()) {
             case 400:
                 return InvalidRequestException::factory($response);
+            default:
+                dump($response->status());
+                return new \Exception();
         }
     }
 }

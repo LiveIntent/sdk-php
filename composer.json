@@ -10,7 +10,10 @@
     "require": {
         "php": "^7.4|^8.0",
         "guzzlehttp/guzzle": "^7.3",
-        "illuminate/http": "^8.38"
+        "illuminate/contracts": "^8.40",
+        "illuminate/http": "^8.38",
+        "illuminate/support": "^8.40",
+        "nesbot/carbon": "^2.46"
     },
     "require-dev": {
         "liveintent/php-cs-rules": "^0.0.2",

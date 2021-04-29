@@ -3,6 +3,7 @@
 require './vendor/autoload.php';
 
 use LiveIntent\SDK\LiveIntentClient;
+use LiveIntent\Services\LineItemService;
 
 // Find example
 
@@ -11,10 +12,10 @@ $li = new LiveIntentClient([
     'client_secret' => '93f129a60f17264feab81a260256f13e'
 ]);
 
-$lineItem = $li->lineItems->find(192431);
+// $lineItem = $li->lineItems->find(192431);
 
 
-dd($lineItem->id, $lineItem->refId);
+// dd($lineItem->id, $lineItem->refId);
 
 // {
 //   "access_token": "kIXI7TbqPccwusQjaW/yutbr/gv6+xyy",

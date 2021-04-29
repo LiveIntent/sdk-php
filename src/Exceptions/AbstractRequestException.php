@@ -11,6 +11,6 @@ abstract class AbstractRequestException extends \Exception
      */
     public static function factory(Response $response)
     {
-        return new static;
+        return new static($response);
     }
 }
