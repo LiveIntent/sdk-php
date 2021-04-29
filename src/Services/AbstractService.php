@@ -5,7 +5,6 @@ namespace LiveIntent\Services;
 use LiveIntent\Resource;
 use LiveIntent\Exceptions;
 use Illuminate\Http\Client\Response;
-use LiveIntent\Client\RequestOptions;
 use LiveIntent\Client\ClientInterface;
 
 abstract class AbstractService
@@ -29,20 +28,22 @@ abstract class AbstractService
      * Find a resource by its id.
      *
      * @param string|int $id
+     * @param null|array $opts
      * @retrurn \LiveIntent\Resource
      */
-    public function find($id)
+    public function find($id, $opts = null)
     {
-        return $this->request('get', $this->resourceUrl($id));
+        return $this->request('get', $this->resourceUrl($id), null, $opts);
     }
 
     /**
      * Create a new resource.
      *
      * @param array|stdClass|\LiveIntent\Resource $attributes
+     * @param null|array $opts
      * @retrurn \LiveIntent\Resource
      */
-    public function create($attributes)
+    public function create($attributes, $opts = null)
     {
         $payload = (array) $attributes;
 
@@ -50,16 +51,17 @@ abstract class AbstractService
             $payload = $attributes->getAttributes();
         }
 
-        return $this->request('post', $this->baseUrl(), $payload);
+        return $this->request('post', $this->baseUrl(), $payload, $opts);
     }
 
     /**
      * Update an existing resource.
      *
      * @param array|stdClass|\LiveIntent\Resource $attributes
+     * @param null|array $opts
      * @retrurn \LiveIntent\Resource
      */
-    public function update($attributes)
+    public function update($attributes, $opts = null)
     {
         $payload = (array) $attributes;
         $id = $payload['id'] ?? null;
@@ -73,7 +75,7 @@ abstract class AbstractService
             throw Exceptions\InvalidArgumentException::factory($payload, 'Unable to find `id` for update operation');
         }
 
-        return $this->request('post', $this->resourceUrl($id), $payload);
+        return $this->request('post', $this->resourceUrl($id), $payload, $opts);
     }
 
     // /**
@@ -126,7 +128,7 @@ abstract class AbstractService
      *
      * @return \LiveIntent\Resource|\Illuminate\Support\Collection
      */
-    protected function request(string $method, string $path, array $params = [], ?ApiRequestOptions $opts = null)
+    protected function request(string $method, string $path, $params = null, $opts = null)
     {
         $response = $this->getClient()->request($method, $path, $params, $opts);
 
