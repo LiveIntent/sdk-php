@@ -39,7 +39,7 @@ abstract class AbstractService
     /**
      * Create a new resource.
      *
-     * @param mixed $attributes
+     * @param array|stdClass|\LiveIntent\Resource $attributes
      * @retrurn \LiveIntent\Resource
      */
     public function create($attributes)
@@ -50,13 +50,13 @@ abstract class AbstractService
             $data = $attributes->getAttributes();
         }
 
-        return $this->request('post', $this->classUrl(), $data);
+        return $this->request('post', $this->baseUrl(), $data);
     }
 
     /**
      * Update an existing resource.
      *
-     * @param mixed $attributes
+     * @param array|stdClass|\LiveIntent\Resource $attributes
      * @retrurn \LiveIntent\Resource
      */
     public function update($attributes)
@@ -72,40 +72,40 @@ abstract class AbstractService
         return $this->request('post', $this->resourceUrl($id), $data);
     }
 
-    /**
-     */
-    public function createOrUpdate($attributes, $key = 'id')
-    {
-        //
-    }
+    // /**
+    //  */
+    // public function createOrUpdate($attributes, $key = 'id')
+    // {
+    //     //
+    // }
 
-    /**
-     */
-    public function createMany($attributeGroups)
-    {
-        //
-    }
+    // /**
+    //  */
+    // public function createMany($attributeGroups)
+    // {
+    //     //
+    // }
 
-    /**
-     */
-    public function updateMany($attributeGroups)
-    {
-        //
-    }
+    // /**
+    //  */
+    // public function updateMany($attributeGroups)
+    // {
+    //     //
+    // }
 
-    /**
-     */
-    public function where($field, $operator, $value)
-    {
-        //
-    }
+    // /**
+    //  */
+    // public function where($field, $operator, $value)
+    // {
+    //     //
+    // }
 
-    /**
-     */
-    public function delete($id)
-    {
-        //
-    }
+    // /**
+    //  */
+    // public function delete($id)
+    // {
+    //     //
+    // }
 
     /**
      * Get the client used by the service to make requests.
@@ -119,6 +119,8 @@ abstract class AbstractService
 
     /**
      * Make a request to the api.
+     *
+     * @return \LiveIntent\Resource|\Illuminate\Support\Collection
      */
     protected function request(string $method, string $path, array $params = [], ?ApiRequestOptions $opts = null)
     {
@@ -126,36 +128,60 @@ abstract class AbstractService
 
         $this->handleErrors($response);
 
+        return $this->morphResponse($response);
+    }
+
+    /**
+     * Morph the response into more friendly objects. Responses
+     * that represent a single entity will return an instance
+     * of that entity, while responses that represent more
+     * than one entity will be morphed into a collection.
+     *
+     * @return \LiveIntent\Resource|\Illuminate\Support\Collection
+     */
+    private function morphResponse(Response $response)
+    {
         return $this->newResource($response->json()['output']);
     }
 
     /**
+     * Get the resource's api url, usually it will be
+     * in the form of `entity/{id}`.
      *
+     * @param string|int $id
+     * @return string
      */
-    public function resourceUrl($id)
+    protected function resourceUrl($id)
     {
-        return sprintf("%s/$id", static::API_URL);
+        return sprintf("%s/$id", $this->baseUrl());
     }
 
     /**
-     *
+     * Get the resource's base url. Usually it will just be `/entity`.
      */
-    public function classUrl()
+    protected function baseUrl()
     {
-        return static::API_URL;
+        return static::BASE_URL;
     }
 
     /**
+     * Create a new resource instance.
      *
+     * @param array $body
+     * @reutrn \LiveIntent\Resource
      */
     private function newResource($body)
     {
-        $cls = static::OBJECT_TYPE;
-        return new $cls($body);
+        $class = static::OBJECT_CLASS;
+        return new $class($body);
     }
 
     /**
+     * Check for api errors and handle them accordingly.
      *
+     * @throws \LiveIntent\AbstractRequestException
+     *
+     * @return void
      */
     private function handleErrors(Response $response)
     {
@@ -163,20 +189,22 @@ abstract class AbstractService
             return;
         }
 
-        throw $this->checkApiError($response);
+        throw $this->newApiError($response);
     }
 
     /**
+     * Create the proper exception based on an error response.
      *
+     * @return \LiveIntent\AbstractRequestException
      */
-    private function checkApiError(Response $response)
+    private function newApiError(Response $response)
     {
         switch ($response->status()) {
             case 400:
                 return InvalidRequestException::factory($response);
             default:
                 dump($response->status());
-                return new \Exception();
+                // return new \Exception();
         }
     }
 }
