@@ -3,11 +3,10 @@
 namespace LiveIntent\Services;
 
 use LiveIntent\Resource;
+use LiveIntent\Exceptions;
 use Illuminate\Http\Client\Response;
 use LiveIntent\Client\RequestOptions;
 use LiveIntent\Client\ClientInterface;
-use LiveIntent\Exceptions\InvalidRequestException;
-use LiveIntent\Exceptions\InvalidArgumentException;
 
 abstract class AbstractService
 {
@@ -71,7 +70,7 @@ abstract class AbstractService
         }
 
         if ($id === null) {
-            throw InvalidArgumentException::factory($payload, 'Unable to find `id` for update operation');
+            throw Exceptions\InvalidArgumentException::factory($payload, 'Unable to find `id` for update operation');
         }
 
         return $this->request('post', $this->resourceUrl($id), $payload);
@@ -204,12 +203,29 @@ abstract class AbstractService
      */
     private function newApiError(Response $response)
     {
+        // TODO
         switch ($response->status()) {
             case 400:
-                return InvalidRequestException::factory($response);
+            case 422:
+                return Exceptions\InvalidRequestException::factory($response);
+            case 401:
+                return Exceptions\AuthenticationException::factory($response);
+            case 403:
+                return Exceptions\AuthorizationException::factory($response);
+            case 404:
+            case 410:
+                return Exceptions\NotFoundException::factory($response);
+            case 409:
+                return Exceptions\ConflictException::factory($response);
+            case 429:
+                return Exceptions\NotFoundException::factory($response);
+            case 500:
+            case 502:
+            case 503:
+            case 504:
+                return Exceptions\ServerErrorException::factory($response);
             default:
-                dump($response->status());
-                // return new \Exception();
+                return Exceptions\UnknownApiException::factory($response);
         }
     }
 }
