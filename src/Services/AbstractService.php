@@ -10,6 +10,16 @@ use LiveIntent\Client\ClientInterface;
 abstract class AbstractService
 {
     /**
+     * The resource's base url. Usually it will just be `/entity`.
+     */
+    protected $baseUrl;
+
+    /**
+     * The resource class for this entity.
+     */
+    protected $objectClass;
+
+    /**
      * The client to use for issueing requests.
      */
     private ClientInterface $client;
@@ -39,7 +49,7 @@ abstract class AbstractService
     /**
      * Create a new resource.
      *
-     * @param array|stdClass|\LiveIntent\Resource $attributes
+     * @param array|\stdClass|\LiveIntent\Resource $attributes
      * @param null|array $opts
      * @retrurn \LiveIntent\Resource
      */
@@ -51,13 +61,13 @@ abstract class AbstractService
             $payload = $attributes->getAttributes();
         }
 
-        return $this->request('post', $this->baseUrl(), $payload, $opts);
+        return $this->request('post', $this->baseUrl, $payload, $opts);
     }
 
     /**
      * Update an existing resource.
      *
-     * @param array|stdClass|\LiveIntent\Resource $attributes
+     * @param array|\stdClass|\LiveIntent\Resource $attributes
      * @param null|array $opts
      * @retrurn \LiveIntent\Resource
      */
@@ -116,7 +126,7 @@ abstract class AbstractService
     /**
      * Get the client used by the service to make requests.
      *
-     * @return \LiveIntent\ClientInterface
+     * @return \LiveIntent\Client\ClientInterface
      */
     protected function getClient()
     {
@@ -159,15 +169,7 @@ abstract class AbstractService
      */
     protected function resourceUrl($id)
     {
-        return sprintf("%s/$id", $this->baseUrl());
-    }
-
-    /**
-     * Get the resource's base url. Usually it will just be `/entity`.
-     */
-    protected function baseUrl()
-    {
-        return static::BASE_URL;
+        return sprintf("%s/$id", $this->baseUrl);
     }
 
     /**
@@ -178,7 +180,7 @@ abstract class AbstractService
      */
     private function newResource($body)
     {
-        $class = static::OBJECT_CLASS;
+        $class = $this->objectClass;
 
         return new $class($body);
     }

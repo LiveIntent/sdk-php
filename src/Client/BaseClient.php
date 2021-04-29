@@ -33,6 +33,13 @@ class BaseClient extends IlluminateClient implements ClientInterface
     private $retryDelay = 100;
 
     /**
+     * The token service.
+     *
+     * @var \LiveIntent\Services\TokenService
+     */
+    private $tokenService;
+
+    /**
      * Create a new instance.
      *
      * @return void
@@ -63,8 +70,7 @@ class BaseClient extends IlluminateClient implements ClientInterface
             ->newPendingRequest()
             ->baseUrl($this->baseUrl)
             ->withToken($this->tokenService->token(), $this->tokenService->tokenType())
-            ->withBody($data, 'application/json')
-            ->asJson()
+            ->withBody(json_encode($data), 'application/json')
             ->acceptJson()
             ->retry($opts['tries'] ?? $this->tries, $opts['retryDelay'] ?? $this->retryDelay)
             ->send($method, $path, $opts);

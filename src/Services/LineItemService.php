@@ -14,6 +14,13 @@ use LiveIntent\LineItem;
  */
 class LineItemService extends AbstractService
 {
-    public const BASE_URL = '/strategy';
-    public const OBJECT_CLASS = LineItem::class;
+    /**
+     * The base url for this entity.
+     */
+    protected $baseUrl = '/strategy';
+
+    /**
+     * The resource class for this entity.
+     */
+    protected $objectClass = LineItem::class;
 }
