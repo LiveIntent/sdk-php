@@ -10,6 +10,9 @@ use LiveIntent\Exceptions\InvalidRequestException;
 
 abstract class AbstractService
 {
+    /**
+     * The client to use for issueing requests.
+     */
     private ClientInterface $client;
 
     /**
@@ -23,7 +26,7 @@ abstract class AbstractService
     }
 
     /**
-     * Find a resource by it's primary key.
+     * Find a resource by its id.
      *
      * @param string|int $id
      * @retrurn \LiveIntent\Resource
@@ -41,7 +44,13 @@ abstract class AbstractService
      */
     public function create($attributes)
     {
-        return $this->request('post', $this->classUrl(), $attributes);
+        $data = (array) $attributes;
+
+        if ($attributes instanceof Resource) {
+            $data = $attributes->getAttributes();
+        }
+
+        return $this->request('post', $this->classUrl(), $data);
     }
 
     /**

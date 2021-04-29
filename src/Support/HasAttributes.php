@@ -6,12 +6,9 @@ use LogicException;
 use DateTimeInterface;
 use InvalidArgumentException;
 use Carbon\CarbonInterface;
-use LiveIntent\Relations\AbstractRelation;
-use LiveIntent\Exceptions\JsonEncodingException;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection as BaseCollection;
 use Illuminate\Support\DateFactory as Date;
 use Illuminate\Support\Str;
 

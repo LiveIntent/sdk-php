@@ -33,6 +33,17 @@ class LineItemServiceTest extends ServiceTestCase
         ]);
 
         $this->assertInstanceOf(LineItem::class, $lineItem);
+
+        $lineItem = new LineItem([
+            'name' => 'SDK Test',
+            'status' => 'paused',
+            'budget' => 0,
+            'pacing' => 'even',
+            'campaign' => 'fef81b06365911e7943622000a974651',
+        ]);
+        $lineItem = $this->service->create($lineItem);
+        $this->assertInstanceOf(LineItem::class, $lineItem);
+        $this->assertNotNull($lineItem->id);
     }
 
     public function testIsUpdateable()
