@@ -14,6 +14,10 @@ class BaseClient extends IlluminateClient implements ClientInterface
 
     private $baseUrl = 'http://localhost:33001'; // TODO change
 
+    private $tries = 1;
+
+    private $retryDelay = 100; // ms
+
     /**
      * Create a new instance.
      *
@@ -56,23 +60,20 @@ class BaseClient extends IlluminateClient implements ClientInterface
     /**
      *
      */
-    public function request($method, $path, $data = null, $opts = null)
+    public function request($method, $path, $data = null, $opts = [])
     {
-        if (!$this->access_token) {
+        if (!$this->access_token) { // needs token
             $this->access_token = $this->obtainAccessToken();
         }
 
-        $req = $this->newPendingRequest()->baseUrl($this->baseUrl);
-
-        $response = $req->send($method, $path, [
-            'headers' => [
-
-                'Authorization' => "Bearer {$this->access_token}",
-                'Content-Type' => 'application/json'
-            ],
-            'json' => (array) $data
-        ]);
-
-        return $response;
+        return $this
+            ->newPendingRequest()
+            ->baseUrl($this->baseUrl)
+            ->withToken($this->access_token)
+            ->withBody($data, 'application/json')
+            ->asJson()
+            ->acceptJson()
+            ->retry($this->tries, $this->retryDelay)
+            ->send($method, $path, $opts);
     }
 }

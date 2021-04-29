@@ -31,7 +31,7 @@ abstract class AbstractService
      * @param null|array $opts
      * @retrurn \LiveIntent\Resource
      */
-    public function find($id, $opts = null)
+    public function find($id, $opts = [])
     {
         return $this->request('get', $this->resourceUrl($id), null, $opts);
     }
@@ -43,7 +43,7 @@ abstract class AbstractService
      * @param null|array $opts
      * @retrurn \LiveIntent\Resource
      */
-    public function create($attributes, $opts = null)
+    public function create($attributes, $opts = [])
     {
         $payload = (array) $attributes;
 
@@ -61,7 +61,7 @@ abstract class AbstractService
      * @param null|array $opts
      * @retrurn \LiveIntent\Resource
      */
-    public function update($attributes, $opts = null)
+    public function update($attributes, $opts = [])
     {
         $payload = (array) $attributes;
         $id = $payload['id'] ?? null;
@@ -116,7 +116,7 @@ abstract class AbstractService
     /**
      * Get the client used by the service to make requests.
      *
-     * @return \LiveIntent\SDK\ClientInterface
+     * @return \LiveIntent\ClientInterface
      */
     protected function getClient()
     {
@@ -128,7 +128,7 @@ abstract class AbstractService
      *
      * @return \LiveIntent\Resource|\Illuminate\Support\Collection
      */
-    protected function request(string $method, string $path, $params = null, $opts = null)
+    protected function request(string $method, string $path, $params = null, $opts = [])
     {
         $response = $this->getClient()->request($method, $path, $params, $opts);
 
