@@ -14,6 +14,6 @@ use LiveIntent\LineItem;
  */
 class LineItemService extends AbstractService
 {
-    const BASE_URL = '/strategy';
-    const OBJECT_CLASS = LineItem::class;
+    public const BASE_URL = '/strategy';
+    public const OBJECT_CLASS = LineItem::class;
 }

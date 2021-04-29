@@ -3,7 +3,6 @@
 namespace LiveIntent\Client;
 
 use LiveIntent\Services\TokenService;
-use LiveIntent\Client\ClientInterface;
 use Illuminate\Http\Client\Factory as IlluminateClient;
 
 class BaseClient extends IlluminateClient implements ClientInterface
@@ -45,7 +44,7 @@ class BaseClient extends IlluminateClient implements ClientInterface
         $this->tokenService = new TokenService([
             'client_id' => $options['client_id'] ?? null,
             'client_secret' => $options['client_secret'] ?? null,
-            'base_url' => $this->baseUrl
+            'base_url' => $this->baseUrl,
         ]);
     }
 

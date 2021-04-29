@@ -32,7 +32,7 @@ class ServiceTestCase extends TestCase
         $this->service = new $this->serviceClass(
             new LiveIntentClient([
                 'client_id' => 'ari',
-                'client_secret' => '93f129a60f17264feab81a260256f13e'
+                'client_secret' => '93f129a60f17264feab81a260256f13e',
             ])
         );
     }

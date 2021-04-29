@@ -62,7 +62,7 @@ class LineItemServiceTest extends ServiceTestCase
         $lineItem = $this->service->update([
             'id' => $lineItem->id,
             'version' => $lineItem->version,
-            'name' => 'SDK Test Updated'
+            'name' => 'SDK Test Updated',
         ]);
 
         $this->assertInstanceOf(LineItem::class, $lineItem);
@@ -78,7 +78,7 @@ class LineItemServiceTest extends ServiceTestCase
 
         $lineItem = $this->service->update([
             'version' => $lineItem->version,
-            'name' => 'should break'
+            'name' => 'should break',
         ]);
     }
 

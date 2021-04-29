@@ -134,7 +134,7 @@ class TokenService
                 'client_id' => $this->clientId,
                 'client_secret' => $this->clientSecret,
                 'grant_type' => 'client_credentials',
-                'scope' => 'openid'
+                'scope' => 'openid',
             ]);
 
         $payload = $response->throw()->json();
@@ -151,7 +151,7 @@ class TokenService
      */
     private function needsNewTokens()
     {
-        if (!$this->accessToken) {
+        if (! $this->accessToken) {
             return true;
         }
 

@@ -4,13 +4,13 @@ namespace LiveIntent\Support;
 
 use LogicException;
 use DateTimeInterface;
-use InvalidArgumentException;
 use Carbon\CarbonInterface;
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\DateFactory as Date;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
+use Illuminate\Support\Carbon;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\DateFactory as Date;
 
 trait HasAttributes
 {
@@ -85,7 +85,8 @@ trait HasAttributes
         );
 
         $attributes = $this->addMutatedAttributesToArray(
-            $attributes, $mutatedAttributes = $this->getMutatedAttributes()
+            $attributes,
+            $mutatedAttributes = $this->getMutatedAttributes()
         );
 
         // Here we will grab all of the appended, calculated attributes to this model
@@ -140,7 +141,8 @@ trait HasAttributes
             // mutated attribute's actual values. After we finish mutating each of the
             // attributes we will return this final array of the mutated attributes.
             $attributes[$key] = $this->mutateAttributeForArray(
-                $key, $attributes[$key]
+                $key,
+                $attributes[$key]
             );
         }
 
@@ -336,12 +338,16 @@ trait HasAttributes
         if (! $relation instanceof Relation) {
             if (is_null($relation)) {
                 throw new LogicException(sprintf(
-                    '%s::%s must return a relationship instance, but "null" was returned. Was the "return" keyword used?', static::class, $method
+                    '%s::%s must return a relationship instance, but "null" was returned. Was the "return" keyword used?',
+                    static::class,
+                    $method
                 ));
             }
 
             throw new LogicException(sprintf(
-                '%s::%s must return a relationship instance.', static::class, $method
+                '%s::%s must return a relationship instance.',
+                static::class,
+                $method
             ));
         }
 
@@ -468,7 +474,9 @@ trait HasAttributes
         [$key, $path] = explode('->', $key, 2);
 
         $value = $this->asJson($this->getArrayAttributeWithValue(
-            $path, $key, $value
+            $path,
+            $key,
+            $value
         ));
 
         $this->attributes[$key] = $value;
@@ -592,7 +600,8 @@ trait HasAttributes
         // when checking the field. We will just return the DateTime right away.
         if ($value instanceof DateTimeInterface) {
             return Date::parse(
-                $value->format('Y-m-d H:i:s.u'), $value->getTimezone()
+                $value->format('Y-m-d H:i:s.u'),
+                $value->getTimezone()
             );
         }
 
@@ -726,8 +735,9 @@ trait HasAttributes
      */
     public function getOriginal($key = null, $default = null)
     {
-        return (new static)->setRawAttributes(
-            $this->original, $sync = true
+        return (new static())->setRawAttributes(
+            $this->original,
+            $sync = true
         )->getOriginalWithoutRewindingModel($key, $default);
     }
 
@@ -742,7 +752,8 @@ trait HasAttributes
     {
         if ($key) {
             return $this->transformModelValue(
-                $key, Arr::get($this->original, $key, $default)
+                $key,
+                Arr::get($this->original, $key, $default)
             );
         }
 
@@ -843,7 +854,8 @@ trait HasAttributes
     public function isDirty($attributes = null)
     {
         return $this->hasChanges(
-            $this->getDirty(), is_array($attributes) ? $attributes : func_get_args()
+            $this->getDirty(),
+            is_array($attributes) ? $attributes : func_get_args()
         );
     }
 
@@ -867,7 +879,8 @@ trait HasAttributes
     public function wasChanged($attributes = null)
     {
         return $this->hasChanges(
-            $this->getChanges(), is_array($attributes) ? $attributes : func_get_args()
+            $this->getChanges(),
+            is_array($attributes) ? $attributes : func_get_args()
         );
     }
 

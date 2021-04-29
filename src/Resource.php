@@ -10,17 +10,18 @@ use LiveIntent\Exceptions\JsonEncodingException;
 
 class Resource implements \ArrayAccess, \JsonSerializable, Arrayable, Jsonable
 {
-    use HasAttributes, HasTimestamps;
+    use HasAttributes;
+    use HasTimestamps;
 
     /**
      * The name of the prop that represents the created_at timestamp.
      */
-    const CREATED_ON = 'created';
+    public const CREATED_ON = 'created';
 
     /**
      * The name of the prop that represents the updated_at timestamp.
      */
-    const UPDATED_ON = 'updated';
+    public const UPDATED_ON = 'updated';
 
     /**
      * Create a new LiveIntent resource instance.
@@ -55,7 +56,7 @@ class Resource implements \ArrayAccess, \JsonSerializable, Arrayable, Jsonable
      */
     public function setAttribute($key, $value)
     {
-        $this->attributes[$key] =  $value;
+        $this->attributes[$key] = $value;
     }
 
     /**

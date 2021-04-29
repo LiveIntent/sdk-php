@@ -2,7 +2,6 @@
 
 namespace LiveIntent;
 
-use LiveIntent\Services;
 use LiveIntent\Client\BaseClient;
 
 class LiveIntentClient extends BaseClient
@@ -13,7 +12,7 @@ class LiveIntentClient extends BaseClient
      * client, rather than instantiating every single service.
      */
     protected static $classMap = [
-        'lineItems' => Services\LineItemService::class
+        'lineItems' => Services\LineItemService::class,
     ];
 
     /**
@@ -31,11 +30,11 @@ class LiveIntentClient extends BaseClient
      */
     public function __get($name)
     {
-        if (!\array_key_exists($name, static::$classMap)) {
+        if (! \array_key_exists($name, static::$classMap)) {
             return null;
         }
 
-        if (!\array_key_exists($name, $this->services)) {
+        if (! \array_key_exists($name, $this->services)) {
             $this->services[$name] = new static::$classMap[$name]($this);
         }
 
