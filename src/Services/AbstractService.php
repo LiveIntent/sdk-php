@@ -203,7 +203,6 @@ abstract class AbstractService
      */
     private function newApiError(Response $response)
     {
-        // TODO
         switch ($response->status()) {
             case 400:
             case 422:

@@ -2,10 +2,10 @@
 
 namespace Tests\Services;
 
-use LiveIntent\Exceptions\InvalidArgumentException;
 use LiveIntent\LineItem;
 use LiveIntent\Services\LineItemService;
 use LiveIntent\Exceptions\InvalidRequestException;
+use LiveIntent\Exceptions\InvalidArgumentException;
 
 class LineItemServiceTest extends ServiceTestCase
 {
