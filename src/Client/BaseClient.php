@@ -61,7 +61,7 @@ class BaseClient extends IlluminateClient implements ClientInterface
      * @param string $method
      * @param string $path
      * @param null|array $data
-     * @param null|array $opts
+     * @param array $opts
      * @return \Illuminate\Http\Client\Response
      */
     public function request($method, $path, $data = null, $opts = [])

@@ -10,6 +10,7 @@ class LiveIntentClient extends BaseClient
      * A mapping of getters to service classes. This allows developers
      * to access individual services directly as getters on the
      * client, rather than instantiating every single service.
+     * @var array<string, class-string>
      */
     protected static $classMap = [
         'lineItems' => Services\LineItemService::class,

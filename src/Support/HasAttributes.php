@@ -9,6 +9,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Illuminate\Support\Carbon;
+use LiveIntent\Relations\AbstractRelation;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\DateFactory as Date;
 
@@ -81,12 +82,12 @@ trait HasAttributes
         // to a DateTime / Carbon instance. This is so we will get some consistent
         // formatting while accessing attributes vs. arraying / JSONing a model.
         $attributes = $this->addDateAttributesToArray(
-            $attributes = $this->getArrayableAttributes()
+            $this->getAttributes()
         );
 
         $attributes = $this->addMutatedAttributesToArray(
             $attributes,
-            $mutatedAttributes = $this->getMutatedAttributes()
+            $this->getMutatedAttributes()
         );
 
         // Here we will grab all of the appended, calculated attributes to this model
@@ -150,16 +151,6 @@ trait HasAttributes
     }
 
     /**
-     * Get an attribute array of all arrayable attributes.
-     *
-     * @return array
-     */
-    protected function getArrayableAttributes()
-    {
-        return $this->getArrayableItems($this->getAttributes());
-    }
-
-    /**
      * Get all of the appendable values that are arrayable.
      *
      * @return array
@@ -170,9 +161,7 @@ trait HasAttributes
             return [];
         }
 
-        return $this->getArrayableItems(
-            array_combine($this->appends, $this->appends)
-        );
+        return array_combine($this->appends, $this->appends);
     }
 
     /**
@@ -184,7 +173,7 @@ trait HasAttributes
     {
         $attributes = [];
 
-        foreach ($this->getArrayableRelations() as $key => $value) {
+        foreach ($this->relations as $key => $value) {
             // If the values implements the Arrayable interface we can just call this
             // toArray method on the instances which will convert both models and
             // collections to their proper array form and we'll set the values.
@@ -217,35 +206,6 @@ trait HasAttributes
         }
 
         return $attributes;
-    }
-
-    /**
-     * Get an attribute array of all arrayable relations.
-     *
-     * @return array
-     */
-    protected function getArrayableRelations()
-    {
-        return $this->getArrayableItems($this->relations);
-    }
-
-    /**
-     * Get an attribute array of all arrayable values.
-     *
-     * @param  array  $values
-     * @return array
-     */
-    protected function getArrayableItems(array $values)
-    {
-        if (count($this->getVisible()) > 0) {
-            $values = array_intersect_key($values, array_flip($this->getVisible()));
-        }
-
-        if (count($this->getHidden()) > 0) {
-            $values = array_diff_key($values, array_flip($this->getHidden()));
-        }
-
-        return $values;
     }
 
     /**
@@ -310,6 +270,7 @@ trait HasAttributes
         // If the key already exists in the relationships array, it just means the
         // relationship has already been loaded, so we'll just return it out of
         // here because there is no need to query within the relations twice.
+        // @psalm-suppress UndefinedMethod
         if ($this->relationLoaded($key)) {
             return $this->relations[$key];
         }
@@ -335,7 +296,7 @@ trait HasAttributes
     {
         $relation = $this->$method();
 
-        if (! $relation instanceof Relation) {
+        if (! $relation instanceof AbstractRelation) {
             if (is_null($relation)) {
                 throw new LogicException(sprintf(
                     '%s::%s must return a relationship instance, but "null" was returned. Was the "return" keyword used?',
@@ -619,7 +580,7 @@ trait HasAttributes
             return Date::instance(Carbon::createFromFormat('Y-m-d', $value)->startOfDay());
         }
 
-        $format = $this->getDateFormat();
+        $format = $this->dateFormat;
 
         // Finally, we will just assume this date is in the format used by default on
         // the database connection and use that format to create the Carbon object
@@ -637,7 +598,7 @@ trait HasAttributes
      * Determine if the given value is a standard date format.
      *
      * @param  string  $value
-     * @return bool
+     * @return bool|int
      */
     protected function isStandardDateFormat($value)
     {
@@ -653,7 +614,7 @@ trait HasAttributes
     public function fromDateTime($value)
     {
         return empty($value) ? $value : $this->asDateTime($value)->format(
-            $this->getDateFormat()
+            $this->dateFormat
         );
     }
 

@@ -6,12 +6,14 @@ use LiveIntent\Support\Jsonable;
 use LiveIntent\Support\Arrayable;
 use LiveIntent\Support\HasAttributes;
 use LiveIntent\Support\HasTimestamps;
+use LiveIntent\Support\HasRelationships;
 use LiveIntent\Exceptions\JsonEncodingException;
 
 class Resource implements \ArrayAccess, \JsonSerializable, Arrayable, Jsonable
 {
     use HasAttributes;
     use HasTimestamps;
+    use HasRelationships;
 
     /**
      * The name of the prop that represents the created_at timestamp.
@@ -29,7 +31,7 @@ class Resource implements \ArrayAccess, \JsonSerializable, Arrayable, Jsonable
      * @param  array  $attributes
      * @return void
      */
-    public function __construct($attributes)
+    public function __construct($attributes = [])
     {
         $this->attributes = $attributes;
 

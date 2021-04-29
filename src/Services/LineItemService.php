@@ -8,9 +8,9 @@ use LiveIntent\LineItem;
 // and comment all the methods. the file will be auto generated anyway
 
 /**
- * @method \LiveIntent\LineItem find($id)
- * @method \LiveIntent\LineItem create($attributes)
- * @method \LiveIntent\LineItem update($attributes)
+ * @method \LiveIntent\LineItem find($id, $opts = [])
+ * @method \LiveIntent\LineItem create($attributes, $opts = [])
+ * @method \LiveIntent\LineItem update($attributes, $opts = [])
  */
 class LineItemService extends AbstractService
 {

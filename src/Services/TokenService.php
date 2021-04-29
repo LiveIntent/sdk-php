@@ -121,7 +121,7 @@ class TokenService
     /**
      * Obtain a fresh set of tokens.
      *
-     * @param null|array $opts
+     * @param array $opts
      * @return void
      */
     public function refreshTokens($opts = [])

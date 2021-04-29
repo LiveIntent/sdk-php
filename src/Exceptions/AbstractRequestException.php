@@ -8,6 +8,8 @@ abstract class AbstractRequestException extends \Exception
 {
     /**
      * Create a new exception instance.
+     *
+     * @return \LiveIntent\Exceptions\AbstractRequestException
      */
     public static function factory(Response $response)
     {

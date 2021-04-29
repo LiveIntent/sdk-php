@@ -11,11 +11,15 @@ abstract class AbstractService
 {
     /**
      * The resource's base url. Usually it will just be `/entity`.
+     *
+     * @var string
      */
     protected $baseUrl;
 
     /**
      * The resource class for this entity.
+     *
+     * @var string
      */
     protected $objectClass;
 
@@ -38,8 +42,8 @@ abstract class AbstractService
      * Find a resource by its id.
      *
      * @param string|int $id
-     * @param null|array $opts
-     * @retrurn \LiveIntent\Resource
+     * @param array $opts
+     * @return \LiveIntent\Resource
      */
     public function find($id, $opts = [])
     {
@@ -50,8 +54,8 @@ abstract class AbstractService
      * Create a new resource.
      *
      * @param array|\stdClass|\LiveIntent\Resource $attributes
-     * @param null|array $opts
-     * @retrurn \LiveIntent\Resource
+     * @param array $opts
+     * @return \LiveIntent\Resource
      */
     public function create($attributes, $opts = [])
     {
@@ -68,8 +72,8 @@ abstract class AbstractService
      * Update an existing resource.
      *
      * @param array|\stdClass|\LiveIntent\Resource $attributes
-     * @param null|array $opts
-     * @retrurn \LiveIntent\Resource
+     * @param array $opts
+     * @return \LiveIntent\Resource
      */
     public function update($attributes, $opts = [])
     {
@@ -136,7 +140,9 @@ abstract class AbstractService
     /**
      * Make a request to the api.
      *
-     * @return \LiveIntent\Resource|\Illuminate\Support\Collection
+     * @param null|array $params
+     * @param array $opts
+     * @return \LiveIntent\Resource
      */
     protected function request(string $method, string $path, $params = null, $opts = [])
     {
@@ -144,19 +150,7 @@ abstract class AbstractService
 
         $this->handleErrors($response);
 
-        return $this->morphResponse($response);
-    }
-
-    /**
-     * Morph the response into more friendly objects. Responses
-     * that represent a single entity will return an instance
-     * of that entity, while responses that represent more
-     * than one entity will be morphed into a collection.
-     *
-     * @return \LiveIntent\Resource|\Illuminate\Support\Collection
-     */
-    private function morphResponse(Response $response)
-    {    // TODO - handle multiple, handle other structures
+        // TODO - handle multiple, handle other structures
         return $this->newResource($response->json()['output']);
     }
 
@@ -176,7 +170,7 @@ abstract class AbstractService
      * Create a new resource instance.
      *
      * @param array $body
-     * @reutrn \LiveIntent\Resource
+     * @return \LiveIntent\Resource
      */
     private function newResource($body)
     {
@@ -188,7 +182,7 @@ abstract class AbstractService
     /**
      * Check for api errors and handle them accordingly.
      *
-     * @throws \LiveIntent\AbstractRequestException
+     * @throws \LiveIntent\Exceptions\AbstractRequestException
      *
      * @return void
      */
@@ -204,7 +198,7 @@ abstract class AbstractService
     /**
      * Create the proper exception based on an error response.
      *
-     * @return \LiveIntent\AbstractRequestException
+     * @return \LiveIntent\Exceptions\AbstractRequestException
      */
     private function newApiError(Response $response)
     {
