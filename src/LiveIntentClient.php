@@ -13,6 +13,9 @@ class LiveIntentClient extends BaseClient
      * @var array<string, class-string>
      */
     protected static $classMap = [
+        'advertisers' => Services\AdvertiserService::class,
+        'campaigns' => Services\CampaignService::class,
+        'insertionOrders' => Services\InsertionOrderService::class,
         'lineItems' => Services\LineItemService::class,
     ];
 
