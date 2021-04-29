@@ -12,9 +12,11 @@ $li = new LiveIntentClient([
     'client_secret' => '93f129a60f17264feab81a260256f13e'
 ]);
 
-// $lineItem = $li->lineItems->find(192431);
+$lineItem = $li->lineItems->find(192431);
 
 
+$service = new LineItemService($li);
+$lineItem = $service->find(192431);
 // dd($lineItem->id, $lineItem->refId);
 
 // {
