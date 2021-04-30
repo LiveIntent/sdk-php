@@ -15,6 +15,6 @@ class TestCase extends PHPUnit
         parent::setUp();
 
         $dotenv = Dotenv::createImmutable(dirname(__DIR__));
-        $dotenv->load();
+        $dotenv->safeLoad();
     }
 }
