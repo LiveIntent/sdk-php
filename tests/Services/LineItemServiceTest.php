@@ -2,95 +2,92 @@
 
 namespace Tests\Services;
 
+use Tests\Fixtures;
 use LiveIntent\LineItem;
 use LiveIntent\Services\LineItemService;
 use LiveIntent\Exceptions\InvalidRequestException;
-use LiveIntent\Exceptions\InvalidArgumentException;
 
 class LineItemServiceTest extends ServiceTestCase
 {
-    public const TEST_RESOURCE_ID = 192431;
-    public const TEST_RESOURCE_HASH_ID = '00009758365a11e7943622000a974651';
-
     protected $serviceClass = LineItemService::class;
 
     public function testIsFindable()
     {
-        $lineItem = $this->service->find(self::TEST_RESOURCE_ID);
+        $lineItem = $this->service->find(Fixtures::lineItemId());
         $this->assertInstanceOf(LineItem::class, $lineItem);
 
-        $lineItem = $this->service->find(self::TEST_RESOURCE_HASH_ID);
+        $lineItem = $this->service->find(Fixtures::lineItemHash());
         $this->assertInstanceOf(LineItem::class, $lineItem);
     }
 
-    public function testIsCreatable()
+    public function testIsCreatableViaAttributesArray()
     {
         $lineItem = $this->service->create([
             'name' => 'SDK Test',
             'status' => 'paused',
             'budget' => 0,
             'pacing' => 'even',
-            'campaign' => 'fef81b06365911e7943622000a974651',
+            'campaign' => Fixtures::campaignHash(),
         ]);
 
+        $this->assertNotNull($lineItem->id);
         $this->assertInstanceOf(LineItem::class, $lineItem);
+    }
 
+    public function testIsCreatableViaResourceInstance()
+    {
         $lineItem = new LineItem([
             'name' => 'SDK Test',
             'status' => 'paused',
             'budget' => 0,
             'pacing' => 'even',
-            'campaign' => 'fef81b06365911e7943622000a974651',
+            'campaign' => Fixtures::campaignHash(),
         ]);
+
         $lineItem = $this->service->create($lineItem);
-        $this->assertInstanceOf(LineItem::class, $lineItem);
+
         $this->assertNotNull($lineItem->id);
+        $this->assertInstanceOf(LineItem::class, $lineItem);
     }
 
-    public function testIsUpdateable()
+    public function testIsUpdateableViaAttributesArray()
     {
-        $lineItem = $this->service->create([
-            'name' => 'SDK Test',
-            'status' => 'paused',
-            'budget' => 0,
-            'pacing' => 'even',
-            'campaign' => 'fef81b06365911e7943622000a974651',
-        ]);
+        $lineItem = $this->service->find(Fixtures::lineItemId());
 
-        $this->assertInstanceOf(LineItem::class, $lineItem);
+        $uniqueName = uniqid('SDK_TEST_');
 
         $lineItem = $this->service->update([
             'id' => $lineItem->id,
             'version' => $lineItem->version,
-            'name' => 'SDK Test Updated',
+            'name' => $uniqueName,
         ]);
 
+        $this->assertEquals($uniqueName, $lineItem->name);
         $this->assertInstanceOf(LineItem::class, $lineItem);
-        $this->assertEquals('SDK Test Updated', $lineItem->name);
+    }
 
-        $lineItem->name = 'Updated again';
+    public function testIsUpdateableViaResourceInstance()
+    {
+        $lineItem = $this->service->find(Fixtures::lineItemId());
+        $uniqueName = uniqid('SDK_TEST_');
+
+        $lineItem->name = $uniqueName;
         $lineItem = $this->service->update($lineItem);
 
+        $this->assertEquals($uniqueName, $lineItem->name);
         $this->assertInstanceOf(LineItem::class, $lineItem);
-        $this->assertEquals('Updated again', $lineItem->name);
-
-        $this->expectException(InvalidArgumentException::class);
-
-        $lineItem = $this->service->update([
-            'version' => $lineItem->version,
-            'name' => 'should break',
-        ]);
     }
 
     public function testWhatHappensWhenThereIsAnError()
     {
+        // TODO move
         $this->expectException(InvalidRequestException::class);
 
         $this->service->create([
             'name' => 'SDK Test',
             'budget' => 0,
             'pacing' => 'even',
-            'campaign' => 'fef81b06365911e7943622000a974651',
+            'campaign' => Fixtures::campaignHash(),
         ]);
     }
 }

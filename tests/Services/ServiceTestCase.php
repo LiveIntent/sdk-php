@@ -32,7 +32,7 @@ class ServiceTestCase extends TestCase
         $this->service = new $this->serviceClass(
             new LiveIntentClient([
                 'client_id' => $_ENV['CLIENT_ID'],
-                'client_secret' => $_ENV['CLIENT_SECRET']
+                'client_secret' => $_ENV['CLIENT_SECRET'],
             ])
         );
     }
