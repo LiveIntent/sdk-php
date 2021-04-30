@@ -84,13 +84,13 @@ class TokenService
      *
      * @return void
      */
-    public function __construct(array $options = [])
+    public function __construct(array $options = [], Http $http = null)
     {
         $this->baseUrl = $options['base_url'];
         $this->clientId = $options['client_id'];
         $this->clientSecret = $options['client_secret'];
 
-        $this->http = new Http();
+        $this->http = $http ?: new Http();
     }
 
     /**
@@ -145,7 +145,7 @@ class TokenService
     }
 
     /**
-     * Check if a new tokens should be generated.
+     * Check if new tokens should be generated.
      *
      * @return bool
      */

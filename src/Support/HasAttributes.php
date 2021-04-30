@@ -1,5 +1,8 @@
 <?php
 
+// Mostly taken from:
+// https://github.com/laravel/framework/blob/8.x/src/Illuminate/Database/Eloquent/Concerns/HasAttributes.php
+
 namespace LiveIntent\Support;
 
 use LogicException;

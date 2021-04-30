@@ -33,6 +33,22 @@ class BaseClient extends IlluminateClient implements ClientInterface
     private $retryDelay = 100;
 
     /**
+     * The default number of seconds to wait on a request before giving up.
+     *
+     * This may be overridden on a per request basis.
+     *
+     * @var int
+     */
+    private $timeout = 10;
+
+    /**
+     * Extra optional guzzle override options.
+     *
+     * @var array
+     */
+    private $guzzleOptions = [];
+
+    /**
      * The token service.
      *
      * @var \LiveIntent\Services\TokenService
@@ -46,7 +62,11 @@ class BaseClient extends IlluminateClient implements ClientInterface
      */
     public function __construct(array $options = [])
     {
+        $this->tries = $options['tries'] ?? $this->tries;
+        $this->timeout = $options['timeout'] ?? $this->timeout;
         $this->baseUrl = $options['base_url'] ?? $this->baseUrl;
+        $this->retryDelay = $options['retryDelay'] ?? $this->retryDelay;
+        $this->guzzleOptions = $options['guzzleOptions'] ?? $this->guzzleOptions;
 
         $this->tokenService = new TokenService([
             'client_id' => $options['client_id'] ?? null,
@@ -72,7 +92,9 @@ class BaseClient extends IlluminateClient implements ClientInterface
             ->withToken($this->tokenService->token(), $this->tokenService->tokenType())
             ->withBody(json_encode($data), 'application/json')
             ->acceptJson()
+            ->timeout($this->timeout)
             ->retry($opts['tries'] ?? $this->tries, $opts['retryDelay'] ?? $this->retryDelay)
+            ->withOptions($this->guzzleOptions)
             ->send($method, $path, $opts);
     }
 }
