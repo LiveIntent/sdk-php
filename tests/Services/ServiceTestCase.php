@@ -21,23 +21,36 @@ class ServiceTestCase extends TestCase
     protected AbstractService $service;
 
     /**
-     *
+     * Set up the test environment.
      */
     public function setUp(): void
     {
         parent::setUp();
 
-        // TODO
+        $client = $this->createClient();
 
+        $this->service = new $this->serviceClass($client);
+    }
+
+    /**
+     * Create the service client to use for the tests.
+     *
+     * @return \LiveIntent\Client\ClientInterface
+     */
+    private function createClient()
+    {
         $client = new LiveIntentClient([
             'client_id' => $_ENV['CLIENT_ID'],
             'client_secret' => $_ENV['CLIENT_SECRET'],
-            'base_url' => 'http://localhost:33001'
+            'base_url' => $_ENV['LI_BASE_URL']
         ]);
 
-        // $client->saveRecordings();
-        $client->fake();
+        if (env('RECORD_SNAPSHOTS')) {
+            $client->saveRecordings();
+        } elseif (env('USE_SNAPSHOTS', true)) {
+            $client->fake();
+        }
 
-        $this->service = new $this->serviceClass($client);
+        return $client;
     }
 }

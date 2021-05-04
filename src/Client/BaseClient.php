@@ -243,26 +243,6 @@ class BaseClient extends IlluminateClient implements ClientInterface
      */
     private function isSameRequest(Request $a, Request $b)
     {
-        // if ($a->method() === $b->method() && $a->url() === $b->url()) {
-
-        //     $Adata = $a->isJson() ? json_decode(collect($a->data())->flip()->first(), true) : $a->data();
-        //     $Bdata = $b->isJson() ? json_decode(collect($b->data())->flip()->first(), true) : $b->data();
-        //     // $Bdata = $b->isJson() ? json_decode($b->body(), true) : $b->data();
-        //     dump('---compare start----');
-        //     dump($Adata, $Bdata);
-        //     dump($a->isJson(), $b->isJson());
-        //     dump('-----------');
-        //     dump($a->data(), $b->data());
-        //     dump($a, $b);
-        //     dump('---compare end----');
-        //     dump('');
-        //     dump('');
-        //     dump('');
-        //     dump('');
-        //     dump('');
-        //     dump('');
-        // }
-
         return $this->getRequestChecksum($a) === $this->getRequestChecksum($b);
     }
 
@@ -273,9 +253,8 @@ class BaseClient extends IlluminateClient implements ClientInterface
      */
     private function getRequestChecksum(Request $request)
     {
-        // We need to do a bit of normalizing for the request data
-        // since the incoming request and saved request look a bit
-        // different
+        // We need to some normalizing of the request data since the
+        // incoming request and saved request look a bit different
         $data = $request->isJson()
               ? json_decode(collect($request->data())->flip()->first(), true)
               : $request->data();
