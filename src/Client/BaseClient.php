@@ -259,10 +259,13 @@ class BaseClient extends IlluminateClient implements ClientInterface
               ? json_decode(collect($request->data())->flip()->first(), true)
               : $request->data();
 
+        // ignore these keys when preforming the comparison
+        $excludedKeys = ['version', 'client_id', 'client_secret'];
+
         $parts = [
             $request->method(),
             $request->url(),
-            collect($data)->except('version')->toArray(),
+            collect($data)->except($excludedKeys)->toArray(),
         ];
 
         return hash('crc32b', collect($parts)->map('json_encode')->join(''));
