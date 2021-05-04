@@ -14,8 +14,7 @@ abstract class AbstractRequestException extends \Exception
     public static function factory(Response $response)
     {
         $code = $response->status();
-        $path = $response->effectiveUri();
 
-        return new static("Request to '{$path}' failed with status code [{$code}]. Response: " . $response->body());
+        return new static("Request failed with status code [{$code}]. Response: " . $response->body());
     }
 }

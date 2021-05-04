@@ -54,27 +54,27 @@ class LineItemServiceTest extends ServiceTestCase
     {
         $lineItem = $this->service->find(Fixtures::lineItemId());
 
-        $uniqueName = uniqid('SDK_TEST_');
+        $updatedName = 'SDK_TEST_UPDATE_NAME';
 
         $lineItem = $this->service->update([
             'id' => $lineItem->id,
             'version' => $lineItem->version,
-            'name' => $uniqueName,
+            'name' => $updatedName,
         ]);
 
-        $this->assertEquals($uniqueName, $lineItem->name);
+        $this->assertEquals($updatedName, $lineItem->name);
         $this->assertInstanceOf(LineItem::class, $lineItem);
     }
 
     public function testIsUpdateableViaResourceInstance()
     {
         $lineItem = $this->service->find(Fixtures::lineItemId());
-        $uniqueName = uniqid('SDK_TEST_');
+        $updatedName = 'SDK_TEST_UPDATE_NAME';
 
-        $lineItem->name = $uniqueName;
+        $lineItem->name = $updatedName;
         $lineItem = $this->service->update($lineItem);
 
-        $this->assertEquals($uniqueName, $lineItem->name);
+        $this->assertEquals($updatedName, $lineItem->name);
         $this->assertInstanceOf(LineItem::class, $lineItem);
     }
 

@@ -29,11 +29,15 @@ class ServiceTestCase extends TestCase
 
         // TODO
 
-        $this->service = new $this->serviceClass(
-            new LiveIntentClient([
-                'client_id' => $_ENV['CLIENT_ID'],
-                'client_secret' => $_ENV['CLIENT_SECRET'],
-            ])
-        );
+        $client = new LiveIntentClient([
+            'client_id' => $_ENV['CLIENT_ID'],
+            'client_secret' => $_ENV['CLIENT_SECRET'],
+            'base_url' => 'http://localhost:33001'
+        ]);
+
+        // $client->saveRecordings();
+        $client->fake();
+
+        $this->service = new $this->serviceClass($client);
     }
 }

@@ -30,3 +30,6 @@ jobs:
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction
       - name: Execute tests
         run: vendor/bin/phpunit
+        env:
+          CLIENT_ID: ${{ secrets.LI_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.LI_CLIENT_SECRET }}
