@@ -65,7 +65,7 @@ class BaseClient extends IlluminateClient implements ClientInterface
      *
      * @var string
      */
-    private $recordingsFilepath = '/tmp/test_snapshots.txt';
+    private $recordingsFilepath = 'tests/__snapshots__/snapshot';
 
     /**
      * The token service.
