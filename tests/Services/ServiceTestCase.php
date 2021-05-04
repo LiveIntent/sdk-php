@@ -42,7 +42,7 @@ class ServiceTestCase extends TestCase
         $client = new LiveIntentClient([
             'client_id' => $_ENV['CLIENT_ID'],
             'client_secret' => $_ENV['CLIENT_SECRET'],
-            'base_url' => $_ENV['LI_BASE_URL']
+            'base_url' => $_ENV['LI_BASE_URL'],
         ]);
 
         if (env('RECORD_SNAPSHOTS')) {

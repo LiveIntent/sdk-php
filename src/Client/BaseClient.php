@@ -137,7 +137,7 @@ class BaseClient extends IlluminateClient implements ClientInterface
 
             $response = $this->findMockedResponse($request);
 
-            if (!$response) {
+            if (! $response) {
                 throw StubNotFoundException::factory($request);
             }
 
@@ -148,13 +148,13 @@ class BaseClient extends IlluminateClient implements ClientInterface
     /**
      * Find a response stub that matches the request.
      *
-     * @return \Illuminate\Http\Client\Response
+     * @return null|\Illuminate\Http\Client\Response
      */
     public function findMockedResponse(Request $request)
     {
         $filepath = $this->getFilepath();
 
-        if (!file_exists($filepath)) {
+        if (! file_exists($filepath)) {
             throw new FileNotFoundException("Recordings file not found. Path tried: `{$filepath}`");
         }
 
@@ -181,7 +181,7 @@ class BaseClient extends IlluminateClient implements ClientInterface
                 return [$pair[0], [
                     'body' => $pair[1]->body(),
                     'headers' => $pair[1]->headers(),
-                    'status' => $pair[1]->status()
+                    'status' => $pair[1]->status(),
                 ]];
             });
 
@@ -262,7 +262,7 @@ class BaseClient extends IlluminateClient implements ClientInterface
         $parts = [
             $request->method(),
             $request->url(),
-            collect($data)->except('version')->toArray()
+            collect($data)->except('version')->toArray(),
         ];
 
         return hash('crc32b', collect($parts)->map('json_encode')->join(''));
