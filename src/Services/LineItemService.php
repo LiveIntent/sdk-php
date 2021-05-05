@@ -9,7 +9,7 @@ use LiveIntent\LineItem;
  * @method \LiveIntent\LineItem create($attributes, $opts = [])
  * @method \LiveIntent\LineItem update($attributes, $opts = [])
  */
-class LineItemService extends AbstractService
+class LineItemService extends AbstractResourceService
 {
     /**
      * The base url for this entity.

@@ -9,7 +9,7 @@ use LiveIntent\Advertiser;
  * @method \LiveIntent\Advertiser create($attributes, $opts = [])
  * @method \LiveIntent\Advertiser update($attributes, $opts = [])
  */
-class AdvertiserService extends AbstractService
+class AdvertiserService extends AbstractResourceService
 {
     /**
      * The base url for this entity.

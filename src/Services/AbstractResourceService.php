@@ -4,11 +4,13 @@ namespace LiveIntent\Services;
 
 use LiveIntent\Resource;
 use LiveIntent\Exceptions;
-use Illuminate\Http\Client\Response;
-use LiveIntent\Client\ClientInterface;
+use LiveIntent\Client\InteractsWithClient;
 
-abstract class AbstractService
+abstract class AbstractResourceService
 {
+    use HandlesApiErrors;
+    use InteractsWithClient;
+
     /**
      * The resource's base url. Usually it will just be `/entity`.
      *
@@ -22,21 +24,6 @@ abstract class AbstractService
      * @var string
      */
     protected $objectClass;
-
-    /**
-     * The client to use for issueing requests.
-     */
-    private ClientInterface $client;
-
-    /**
-     * Create a new service instance.
-     *
-     * @return void
-     */
-    public function __construct(ClientInterface $client)
-    {
-        $this->client = $client;
-    }
 
     /**
      * Find a resource by its id.
@@ -128,16 +115,6 @@ abstract class AbstractService
     // }
 
     /**
-     * Get the client used by the service to make requests.
-     *
-     * @return \LiveIntent\Client\ClientInterface
-     */
-    protected function getClient()
-    {
-        return $this->client;
-    }
-
-    /**
      * Make a request to the api.
      *
      * @param null|array $params
@@ -177,53 +154,5 @@ abstract class AbstractService
         $class = $this->objectClass;
 
         return new $class($body);
-    }
-
-    /**
-     * Check for api errors and handle them accordingly.
-     *
-     * @throws \LiveIntent\Exceptions\AbstractRequestException
-     *
-     * @return void
-     */
-    private function handleErrors(Response $response)
-    {
-        if ($response->successful()) {
-            return;
-        }
-
-        throw $this->newApiError($response);
-    }
-
-    /**
-     * Create the proper exception based on an error response.
-     *
-     * @return \LiveIntent\Exceptions\AbstractRequestException
-     */
-    private function newApiError(Response $response)
-    {
-        switch ($response->status()) {
-            case 400:
-            case 422:
-                return Exceptions\InvalidRequestException::factory($response);
-            case 401:
-                return Exceptions\AuthenticationException::factory($response);
-            case 403:
-                return Exceptions\AuthorizationException::factory($response);
-            case 404:
-            case 410:
-                return Exceptions\NotFoundException::factory($response);
-            case 409:
-                return Exceptions\ConflictException::factory($response);
-            case 429:
-                return Exceptions\NotFoundException::factory($response);
-            case 500:
-            case 502:
-            case 503:
-            case 504:
-                return Exceptions\ServerErrorException::factory($response);
-            default:
-                return Exceptions\UnknownApiException::factory($response);
-        }
     }
 }

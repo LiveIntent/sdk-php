@@ -4,7 +4,7 @@ namespace Tests\Services;
 
 use Tests\TestCase;
 use LiveIntent\LiveIntentClient;
-use LiveIntent\Services\AbstractService;
+use LiveIntent\Services\AbstractResourceService;
 
 class ServiceTestCase extends TestCase
 {
@@ -18,7 +18,7 @@ class ServiceTestCase extends TestCase
     /**
      * The service under test.
      */
-    protected AbstractService $service;
+    protected AbstractResourceService $service;
 
     /**
      * Set up the test environment.
@@ -29,7 +29,8 @@ class ServiceTestCase extends TestCase
 
         $client = $this->createClient();
 
-        $this->service = new $this->serviceClass($client);
+        $this->service = new $this->serviceClass();
+        $this->service->setClient($client);
     }
 
     /**

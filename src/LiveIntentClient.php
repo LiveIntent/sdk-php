@@ -30,7 +30,7 @@ class LiveIntentClient extends BaseClient
      * Dynamically resolve a service instance.
      *
      * @param string $name
-     * @return null|\LiveIntent\Services\AbstractService
+     * @return null|\LiveIntent\Services\AbstractResourceService
      */
     public function __get($name)
     {

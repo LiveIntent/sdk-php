@@ -9,7 +9,7 @@ use LiveIntent\Campaign;
  * @method \LiveIntent\Campaign create($attributes, $opts = [])
  * @method \LiveIntent\Campaign update($attributes, $opts = [])
  */
-class CampaignService extends AbstractService
+class CampaignService extends AbstractResourceService
 {
     /**
      * The base url for this entity.
