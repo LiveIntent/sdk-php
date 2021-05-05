@@ -3,39 +3,11 @@
 namespace LiveIntent\Services;
 
 use Carbon\Carbon;
-use Illuminate\Http\Client\Factory as Http;
+use LiveIntent\Client\InteractsWithClient;
 
 class TokenService
 {
-    /**
-     * The base url for all api requests issued by this service.
-     *
-     * @var string
-     */
-    private $baseUrl;
-
-    /**
-     * The default number of times a request should be retried.
-     *
-     * @var int
-     */
-    private $tries = 1;
-
-    /**
-     * The default number of milliseconds to delay before retrying.
-     *
-     * This may be overridden on a per request basis.
-     *
-     * @var int
-     */
-    private $retryDelay = 100;
-
-    /**
-     * The http client to use.
-     *
-     * @var \Illuminate\Http\Client\Factory
-     */
-    private $http;
+    use InteractsWithClient;
 
     /**
      * The client id.
@@ -84,13 +56,10 @@ class TokenService
      *
      * @return void
      */
-    public function __construct(array $options = [], Http $http = null)
+    public function __construct(array $options = [])
     {
-        $this->baseUrl = $options['base_url'];
         $this->clientId = $options['client_id'];
         $this->clientSecret = $options['client_secret'];
-
-        $this->http = $http ?: new Http();
     }
 
     /**
@@ -124,11 +93,9 @@ class TokenService
      * @param array $opts
      * @return void
      */
-    public function refreshTokens($opts = [])
+    public function refreshTokens()
     {
-        $response = $this->http
-            ->baseUrl($this->baseUrl)
-            ->retry($opts['tries'] ?? $this->tries, $opts['retryDelay'] ?? $this->retryDelay)
+        $response = $this->getClient()
             ->asForm()
             ->post('oauth/token', [
                 'client_id' => $this->clientId,

@@ -4,7 +4,6 @@ namespace Tests\Services;
 
 use Tests\TestCase;
 use LiveIntent\LiveIntentClient;
-use LiveIntent\Services\AbstractResourceService;
 
 class ServiceTestCase extends TestCase
 {
@@ -18,7 +17,7 @@ class ServiceTestCase extends TestCase
     /**
      * The service under test.
      */
-    protected AbstractResourceService $service;
+    protected $service;
 
     /**
      * Set up the test environment.

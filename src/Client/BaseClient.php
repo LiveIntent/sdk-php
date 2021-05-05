@@ -2,56 +2,33 @@
 
 namespace LiveIntent\Client;
 
+use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Http\Client\Request;
 use LiveIntent\Services\TokenService;
+use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\RequestException;
 use LiveIntent\Exceptions\FileNotFoundException;
 use LiveIntent\Exceptions\StubNotFoundException;
 use LiveIntent\Exceptions\InvalidOptionException;
-use Illuminate\Http\Client\Factory as IlluminateClient;
+use Illuminate\Http\Client\Factory as RequestFactory;
 
-class BaseClient extends IlluminateClient implements ClientInterface
+class BaseClient extends RequestFactory
 {
     /**
-     * The base url for all api requests issued by this client.
-     *
-     * @var string
-     */
-    private $baseUrl;
-
-    /**
-     * The default number of times a request should be retried.
-     *
-     * This may be overridden on a per request basis.
-     *
-     * @var int
-     */
-    private $tries = 1;
-
-    /**
-     * The default number of milliseconds to delay before retrying.
-     *
-     * This may be overridden on a per request basis.
-     *
-     * @var int
-     */
-    private $retryDelay = 100;
-
-    /**
-     * The default number of seconds to wait on a request before giving up.
-     *
-     * This may be overridden on a per request basis.
-     *
-     * @var int
-     */
-    private $timeout = 10;
-
-    /**
-     * Extra optional guzzle override options.
+     * The default options to use when creating requests.
      *
      * @var array
      */
-    private $guzzleOptions = [];
+    private $options = [
+        'base_url' => null,
+        'client_id' => null,
+        'client_secret' => null,
+        'tries' => 1,
+        'retryDelay' => 100,
+        'timeout' => 10,
+        'guzzleOptions' => []
+    ];
 
     /**
      * Whether the request/response pairs should be stored for later use.
@@ -81,19 +58,15 @@ class BaseClient extends IlluminateClient implements ClientInterface
      */
     public function __construct(array $options = [])
     {
-        $this->tries = $options['tries'] ?? $this->tries;
-        $this->timeout = $options['timeout'] ?? $this->timeout;
-        $this->baseUrl = $options['base_url'] ?? $this->baseUrl;
-        $this->retryDelay = $options['retryDelay'] ?? $this->retryDelay;
-        $this->guzzleOptions = $options['guzzleOptions'] ?? $this->guzzleOptions;
+        $this->options = array_merge_recursive($this->options, $options);
         $this->recordingsFilepath = $options['recordingsFilepath'] ?? $this->recordingsFilepath;
+
         $this->stubCallbacks = collect();
 
         $this->tokenService = new TokenService([
-            'client_id' => $options['client_id'] ?? null,
-            'client_secret' => $options['client_secret'] ?? null,
-            'base_url' => $this->baseUrl,
-        ], $this);
+            'client_id' => $this->options['client_id'],
+            'client_secret' => $this->options['client_secret'],
+        ]);
     }
 
     /**
@@ -107,15 +80,43 @@ class BaseClient extends IlluminateClient implements ClientInterface
      */
     public function request($method, $path, $data = null, $opts = [])
     {
-        return $this
-            ->baseUrl($this->baseUrl)
-            ->withToken($this->tokenService->token(), $this->tokenService->tokenType())
-            ->withBody(json_encode($data), 'application/json')
+        return tap($this->newPendingRequest(), function ($request) {
+            $this->prepareAuth($request);
+        })->send($method, $path, $opts);
+    }
+
+    /**
+     * Prepare authentication for the request.
+     *
+     * @param PendingRequest $request
+     * @return void
+     * @throws Exception
+     * @throws RequestException
+     */
+    public function prepareAuth(PendingRequest $request)
+    {
+        $options = $request->mergeOptions();
+
+        if (data_has($options, 'headers.Authorizaion') || data_has($options, 'cookies')) {
+            return;
+        }
+
+        $request->withToken($this->tokenService->token(), $this->tokenService->tokenType());
+    }
+
+    /**
+     * Create a new pending request instance for this factory.
+     *
+     * @return \Illuminate\Http\Client\PendingRequest
+     */
+    protected function newPendingRequest()
+    {
+        return parent::newPendingRequest()
             ->acceptJson()
-            ->timeout($this->timeout)
-            ->retry($opts['tries'] ?? $this->tries, $opts['retryDelay'] ?? $this->retryDelay)
-            ->withOptions($this->guzzleOptions)
-            ->send($method, $path, $opts);
+            ->timeout($this->options['timeout'])
+            ->baseUrl($this->options['base_url'])
+            ->withOptions($this->options['guzzleOptions'])
+            ->retry($this->options['tries'], $this->options['retryDelay']);
     }
 
     /**
@@ -143,6 +144,20 @@ class BaseClient extends IlluminateClient implements ClientInterface
 
             return $this->response($response['body'], $response['status'], $response['headers']);
         });
+    }
+
+    /**
+     * Save request/response pairs for later mocking.
+     *
+     * @return $this
+     */
+    public function saveRecordings()
+    {
+        $this->record();
+
+        $this->shouldSaveRecordings = true;
+
+        return $this;
     }
 
     /**
@@ -187,20 +202,6 @@ class BaseClient extends IlluminateClient implements ClientInterface
 
             $this->saveRequestResponsePairs($recorded);
         }
-    }
-
-    /**
-     * Save request/response pairs for later mocking.
-     *
-     * @return $this
-     */
-    public function saveRecordings()
-    {
-        $this->record();
-
-        $this->shouldSaveRecordings = true;
-
-        return $this;
     }
 
     /**

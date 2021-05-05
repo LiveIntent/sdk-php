@@ -2,19 +2,19 @@
 
 namespace LiveIntent\Client;
 
-use LiveIntent\Client\ClientInterface;
+use LiveIntent\Client\BaseClient;
 
 trait InteractsWithClient
 {
     /**
      * The client to use for issueing requests.
      */
-    private ClientInterface $client;
+    private BaseClient $client;
 
     /**
      * Get the client used by the service to make requests.
      *
-     * @return \LiveIntent\Client\ClientInterface
+     * @return \LiveIntent\Client\BaseClient
      */
     public function getClient()
     {
@@ -24,10 +24,10 @@ trait InteractsWithClient
     /**
      * Set the client to use.
      *
-     * @param ClientInterface $client
+     * @param \LiveIntent\Client\BaseClient $client
      * @return void
      */
-    public function setClient(ClientInterface $client)
+    public function setClient(BaseClient $client)
     {
         $this->client = $client;
     }
