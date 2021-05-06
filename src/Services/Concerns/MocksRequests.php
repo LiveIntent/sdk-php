@@ -85,7 +85,7 @@ trait MocksRequests
     public function findMockedResponse(Request $request)
     {
         if (! file_exists($this->recordingsFilepath)) {
-            throw new FileNotFoundException("Recordings file not found. Path tried: `{$filepath}`");
+            throw new FileNotFoundException("Recordings file not found. Path tried: `{$this->recordingsFilepath}`");
         }
 
         $recorded = unserialize(file_get_contents($this->recordingsFilepath));
@@ -153,25 +153,32 @@ trait MocksRequests
     }
 
     /**
+     * Get the request's data in a normalized way for comparison.
+     *
+     * @return array
+     */
+    private function getNormalizedRequestData(Request $request)
+    {
+        $data = $request->isJson()
+            ? json_decode(collect($request->data())->flip()->first(), true)
+            : $request->data();
+
+        $excludedKeys = ['version', 'client_id', 'client_secret'];
+
+        return collect($data)->except($excludedKeys)->toArray();
+    }
+
+    /**
      * Get a checksum of a request so we can compare if requests are the same.
      *
      * @return string
      */
     private function getRequestChecksum(Request $request)
     {
-        // We need to some normalizing of the request data since the
-        // incoming request and saved request look a bit different
-        $data = $request->isJson()
-              ? json_decode(collect($request->data())->flip()->first(), true)
-              : $request->data();
-
-        // ignore these keys when preforming the comparison
-        $excludedKeys = ['version', 'client_id', 'client_secret'];
-
         $parts = [
             $request->method(),
             $request->url(),
-            collect($data)->except($excludedKeys)->toArray(),
+            $this->getNormalizedRequestData($request)
         ];
 
         return hash('crc32b', collect($parts)->map('json_encode')->join(''));

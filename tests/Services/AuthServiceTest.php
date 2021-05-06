@@ -17,6 +17,8 @@ class AuthServiceTest extends ServiceTestCase
             'base_url' => env('LI_BASE_URL', 'http://localhost:33001'),
         ]);
 
+        $tokenService->fake();
+
         $user = $this->service->withToken($tokenService->token())->user();
 
         $this->assertInstanceOf(User::class, $user);

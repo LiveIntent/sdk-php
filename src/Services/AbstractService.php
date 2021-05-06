@@ -47,7 +47,7 @@ abstract class AbstractService extends Factory
      */
     protected function newPendingRequest()
     {
-        $request = new PendingRequest();
+        $request = new PendingRequest($this);
 
         return $request
             ->acceptJson()
