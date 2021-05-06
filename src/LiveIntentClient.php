@@ -3,34 +3,29 @@
 namespace LiveIntent;
 
 use LiveIntent\Client\BaseClient;
+use LiveIntent\Services\ServiceFactory;
 
 class LiveIntentClient extends BaseClient
 {
     /**
-     * A mapping of getters to service classes. This allows developers
-     * to access individual services directly as getters on the
-     * client, rather than instantiating every single service.
-     * @var array<string, class-string>
+     * @var \LiveIntent\Services\ServiceFactory
      */
-    protected static $classMap = [
-        'advertisers' => Services\AdvertiserService::class,
-        'campaigns' => Services\CampaignService::class,
-        'insertionOrders' => Services\InsertionOrderService::class,
-        'lineItems' => Services\LineItemService::class,
-    ];
+    private $serviceFactory;
 
     /**
-     * Dynamically resolve a service instance.
+     * Dynamically resolve a service instance. This makes it easy
+     * to access individual services directly as getters on the
+     * client rather than instantiating every single service.
      *
      * @param string $name
      * @return null|\LiveIntent\Services\AbstractResourceService
      */
     public function __get($name)
     {
-        if (! \array_key_exists($name, static::$classMap)) {
-            return null;
+        if (null === $this->serviceFactory) {
+            $this->serviceFactory = new ServiceFactory($this->options);
         }
 
-        return $this->buildService(static::$classMap[$name]);
+        return $this->serviceFactory->make($name);
     }
 }

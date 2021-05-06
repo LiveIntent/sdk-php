@@ -2,15 +2,20 @@
 
 namespace LiveIntent\Services;
 
-
+use Illuminate\Support\Collection;
 use Illuminate\Http\Client\Factory;
+use Illuminate\Http\Client\Request;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Traits\ForwardsCalls;
+use LiveIntent\Exceptions\FileNotFoundException;
+use LiveIntent\Exceptions\StubNotFoundException;
+use LiveIntent\Exceptions\InvalidOptionException;
 
 abstract class AbstractService extends Factory
 {
     use ForwardsCalls;
     use HandlesApiErrors;
+    use AuthenticatesRequests;
 
     /**
      * The default options to use when creating requests.
@@ -18,9 +23,6 @@ abstract class AbstractService extends Factory
      * @var array
      */
     protected $options = [];
-
-    // TODO
-    private $tokenService;
 
     /**
      * The currently pending request.
@@ -53,8 +55,6 @@ abstract class AbstractService extends Factory
         parent::__construct();
 
         $this->options = $options;
-
-        $this->tokenService = new TokenService($options);
     }
 
     /**
@@ -85,7 +85,7 @@ abstract class AbstractService extends Factory
     public function request(string $method, string $url, array $options = [])
     {
         $request = tap($this->pendingRequest(), function ($request) {
-            $this->prepareAuth($request);
+            $this->authenticateRequest($request);
         });
 
         $response = $request->send($method, $url, $options);
@@ -104,25 +104,6 @@ abstract class AbstractService extends Factory
     public function withJson(array $data)
     {
         return $this->withBody(json_encode($data), 'application/json');
-    }
-
-    /**
-     * Prepare authentication for the request.
-     *
-     * @param PendingRequest $request
-     * @return void
-     * @throws Exception
-     * @throws RequestException
-     */
-    private function prepareAuth(PendingRequest $request)
-    {
-        $options = $request->mergeOptions();
-
-        if (data_get($options, 'headers.Authorizaion') || data_get($options, 'cookies')) {
-            return;
-        }
-
-        $request->withToken($this->tokenService->token(), $this->tokenService->tokenType());
     }
 
     /**
@@ -268,6 +249,8 @@ abstract class AbstractService extends Factory
 
     /**
      * Get the currently pending request.
+     *
+     * @return PendingRequest
      */
     public function pendingRequest()
     {
@@ -277,7 +260,6 @@ abstract class AbstractService extends Factory
 
         return $this->pendingRequest;
     }
-
 
     /**
      * Execute a method against the current pending request instance.

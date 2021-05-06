@@ -9,7 +9,7 @@ class BaseClient
      *
      * @var array
      */
-    private $options = [
+    protected $options = [
         'base_url' => null,
         'client_id' => null,
         'client_secret' => null,
@@ -27,14 +27,6 @@ class BaseClient
     public function __construct(array $options = [])
     {
         $this->options = array_merge($this->options, $options);
-    }
-
-    /**
-     *
-     */
-    public function buildService($class)
-    {
-        return new $class($this->options);
     }
 
     /**
