@@ -59,6 +59,14 @@ class ServiceFactory
 
         return tap(new $service($this->options), function ($service) {
             $service->setTokenService($this->tokenService);
+
+            if (data_get($this->options, 'shouldRecord')) {
+                $service->saveRecordings();
+            }
+
+            if (data_get($this->options, 'shouldFake')) {
+                $service->fake();
+            }
         });
     }
 }

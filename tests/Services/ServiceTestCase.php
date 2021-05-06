@@ -46,7 +46,7 @@ class ServiceTestCase extends TestCase
         ]);
 
         if (env('RECORD_SNAPSHOTS')) {
-            $client->saveRecordings();
+            $client->record();
         } elseif (env('USE_SNAPSHOTS', true)) {
             $client->fake();
         }

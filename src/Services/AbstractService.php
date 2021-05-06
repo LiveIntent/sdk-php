@@ -114,11 +114,15 @@ abstract class AbstractService extends Factory
      */
     public function fake($callback = null)
     {
+        if ($this->tokenService) {
+            $this->tokenService->fake();
+        }
+
         if ($callback !== null) {
             return parent::fake($callback);
         }
 
-        return parent::fake(function (Request $request) {
+        parent::fake(function (Request $request) {
             if ($this->shouldSaveRecordings) {
                 throw new InvalidOptionException('Cannot use the `fake` option together with the `saveRecordings` option.');
             }
@@ -131,6 +135,10 @@ abstract class AbstractService extends Factory
 
             return $this->response($response['body'], $response['status'], $response['headers']);
         });
+
+        $this->pendingRequest()->stub($this->stubCallbacks);
+
+        return $this;
     }
 
     /**
@@ -140,6 +148,10 @@ abstract class AbstractService extends Factory
      */
     public function saveRecordings()
     {
+        if ($this->tokenService) {
+            $this->tokenService->saveRecordings();
+        }
+
         $this->record();
 
         $this->shouldSaveRecordings = true;
