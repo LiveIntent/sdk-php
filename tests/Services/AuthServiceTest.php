@@ -22,8 +22,5 @@ class AuthServiceTest extends ServiceTestCase
         $user = $this->service->withToken($tokenService->token())->user();
 
         $this->assertInstanceOf(User::class, $user);
-
-        // return $this->liAuth->withToken($request->bearerToken())->user();
-        // return $this->liAuth->withCookies($cookies, $cookieDomain)->user();
     }
 }
