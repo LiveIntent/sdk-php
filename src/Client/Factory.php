@@ -86,9 +86,9 @@ class Factory extends BaseFactory
      *
      * @return $this
      */
-    public function saveRecordings()
+    public function record()
     {
-        $this->record();
+        parent::record();
 
         $this->shouldSaveRecordings = true;
 

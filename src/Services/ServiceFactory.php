@@ -26,6 +26,7 @@ class ServiceFactory
      */
     protected static $classMap = [
         'advertisers' => AdvertiserService::class,
+        'auth' => AuthService::class,
         'campaigns' => CampaignService::class,
         'insertionOrders' => InsertionOrderService::class,
         'lineItems' => LineItemService::class,
@@ -47,7 +48,7 @@ class ServiceFactory
      * Dynamically resolve a service instance.
      *
      * @param string $name
-     * @return null|\LiveIntent\Services\AbstractResourceService
+     * @return null|\LiveIntent\Services\AbstractService
      */
     public function make($name)
     {
@@ -61,7 +62,7 @@ class ServiceFactory
             $service->setTokenService($this->tokenService);
 
             if (data_get($this->options, 'shouldRecord')) {
-                $service->saveRecordings();
+                $service->record();
             }
 
             if (data_get($this->options, 'shouldFake')) {

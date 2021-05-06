@@ -2,6 +2,9 @@
 
 namespace LiveIntent\Services;
 
+/**
+ * @method \LiveIntent\User user()
+ */
 class AuthService extends AbstractService
 {
     /**

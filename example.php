@@ -1,5 +1,9 @@
 <?php
 
+use LiveIntent\LiveIntentClient;
+
+$client = new LiveIntentClient();
+
 $liveintent->auth->user();
 
 $liveintent->lineItems->find(1);

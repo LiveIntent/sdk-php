@@ -2,74 +2,35 @@
 
 namespace LiveIntent;
 
-use LiveIntent\Services\ServiceFactory;
+use LiveIntent\Client\AbstractClient;
 
-class LiveIntentClient
+/**
+ * Client used to interact with the LiveIntent Api.
+ *
+ * @property \LiveIntent\Services\AdvertiserService $advertisers
+ * @property \LiveIntent\Services\AuthService $auth
+ * @property \LiveIntent\Services\CampaignService $campaigns
+ * @property \LiveIntent\Services\InsertionOrderService $insertionOrders
+ * @property \LiveIntent\Services\LineItemService $lineItems
+ */
+class LiveIntentClient extends AbstractClient
 {
-    /**
-     * @var \LiveIntent\Services\ServiceFactory
-     */
-    private $serviceFactory;
-
     /**
      * The global client options.
      *
      * @var array
      */
     protected $options = [
+        // The base URL for all api requests
         'base_url' => null,
-        'client_id' => null,
-        'client_secret' => null,
+
+        // The number of times a request should be tried
         'tries' => 1,
+
+        // The number of seconds to wait before retrying a request
         'retryDelay' => 100,
+
+        // The number of seconds to wait for a response before hanging up
         'timeout' => 10,
-        'guzzleOptions' => []
     ];
-
-    /**
-     * Create a new client instance.
-     *
-     * @return void
-     */
-    public function __construct(array $options = [])
-    {
-        $this->options = array_merge($this->options, $options);
-    }
-
-    /**
-     *
-     */
-    public function fake()
-    {
-        $this->options['shouldFake'] = true;
-
-        return $this;
-    }
-
-    /**
-     *
-     */
-    public function record()
-    {
-        $this->options['shouldRecord'] = true;
-
-        return $this;
-    }
-
-    /**
-     * Dynamically resolve a service instance. This makes it easy
-     * to access individual services directly as getters on the
-     * client rather than instantiating every single service.
-     *
-     * @param string $name
-     * @return null|\LiveIntent\Services\AbstractResourceService
-     */
-    public function __get($name)
-    {
-        if (null === $this->serviceFactory) {
-            $this->serviceFactory = new ServiceFactory($this->options);
-        }
-
-        return $this->serviceFactory->make($name);
-    }
 }

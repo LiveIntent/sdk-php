@@ -68,10 +68,10 @@ abstract class AbstractService extends Factory
 
         return $request
             ->acceptJson()
-            ->timeout($this->options['timeout'])
-            ->baseUrl($this->options['base_url'])
-            ->withOptions($this->options['guzzleOptions'])
-            ->retry($this->options['tries'], $this->options['retryDelay']);
+            ->timeout(data_get($this->options, 'timeout'))
+            ->baseUrl(data_get($this->options, 'base_url'))
+            ->withOptions(data_get($this->options, 'guzzleOptions', []))
+            ->retry(data_get($this->options, 'tries'), data_get($this->options, 'retryDelay'));
     }
 
     /**
