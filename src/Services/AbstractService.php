@@ -84,7 +84,7 @@ abstract class AbstractService extends Factory
      */
     public function request(string $method, string $url, array $options = [])
     {
-        $request = tap($this->newPendingRequest(), function ($request) {
+        $request = tap($this->pendingRequest(), function ($request) {
             $this->prepareAuth($request);
         });
 
@@ -93,6 +93,17 @@ abstract class AbstractService extends Factory
         $this->handleErrors($response);
 
         return $response;
+    }
+
+    /**
+     * Attach a json body to the request.
+     *
+     * @param array $data
+     * @return PendingRequest
+     */
+    public function withJson(array $data)
+    {
+        return $this->withBody(json_encode($data), 'application/json');
     }
 
     /**
@@ -256,6 +267,19 @@ abstract class AbstractService extends Factory
     }
 
     /**
+     * Get the currently pending request.
+     */
+    public function pendingRequest()
+    {
+        if (!$this->pendingRequest) {
+            $this->pendingRequest = $this->newPendingRequest();
+        }
+
+        return $this->pendingRequest;
+    }
+
+
+    /**
      * Execute a method against the current pending request instance.
      *
      * @param  string  $method
@@ -264,11 +288,7 @@ abstract class AbstractService extends Factory
      */
     public function __call($method, $parameters)
     {
-        if (!$this->pendingRequest) {
-            $this->pendingRequest = $this->newPendingRequest();
-        }
-
-        $result = $this->forwardCallTo($this->pendingRequest, $method, $parameters);
+        $result = $this->forwardCallTo($this->pendingRequest(), $method, $parameters);
 
         if ($result instanceof PendingRequest) {
             return $this;

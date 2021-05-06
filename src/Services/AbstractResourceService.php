@@ -46,7 +46,7 @@ abstract class AbstractResourceService extends AbstractService
             $payload = $attributes->getAttributes();
         }
 
-        return $this->request('post', $this->baseUrl, $payload);
+        return $this->withJson($payload)->request('post', $this->baseUrl);
     }
 
     /**
@@ -69,7 +69,7 @@ abstract class AbstractResourceService extends AbstractService
             throw Exceptions\InvalidArgumentException::factory($payload, 'Unable to find `id` for update operation');
         }
 
-        return $this->request('post', $this->resourceUrl($id), $payload);
+        return $this->withJson($payload)->request('post', $this->resourceUrl($id));
     }
 
     // /**
