@@ -20,13 +20,6 @@ class LiveIntentClient extends BaseClient
     ];
 
     /**
-     * The already instantiated services.
-     *
-     * @var array
-     */
-    protected $services = [];
-
-    /**
      * Dynamically resolve a service instance.
      *
      * @param string $name
@@ -38,10 +31,6 @@ class LiveIntentClient extends BaseClient
             return null;
         }
 
-        if (! \array_key_exists($name, $this->services)) {
-            $this->services[$name] = new static::$classMap[$name]($this);
-        }
-
-        return $this->services[$name];
+        return $this->buildService(static::$classMap[$name]);
     }
 }

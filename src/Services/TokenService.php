@@ -3,12 +3,9 @@
 namespace LiveIntent\Services;
 
 use Carbon\Carbon;
-use LiveIntent\Client\InteractsWithClient;
 
-class TokenService
+class TokenService extends AbstractService
 {
-    use InteractsWithClient;
-
     /**
      * The client id.
      *
@@ -58,6 +55,8 @@ class TokenService
      */
     public function __construct(array $options = [])
     {
+        $this->options = $options;
+
         $this->clientId = $options['client_id'];
         $this->clientSecret = $options['client_secret'];
     }
@@ -95,14 +94,12 @@ class TokenService
      */
     public function refreshTokens()
     {
-        $response = $this->getClient()
-            ->asForm()
-            ->post('oauth/token', [
-                'client_id' => $this->clientId,
-                'client_secret' => $this->clientSecret,
-                'grant_type' => 'client_credentials',
-                'scope' => 'openid',
-            ]);
+        $response = $this->asForm()->post('oauth/token', [
+            'client_id' => $this->clientId,
+            'client_secret' => $this->clientSecret,
+            'grant_type' => 'client_credentials',
+            'scope' => 'openid',
+        ]);
 
         $payload = $response->throw()->json();
 

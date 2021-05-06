@@ -2,17 +2,13 @@
 
 namespace LiveIntent\Services;
 
-use LiveIntent\Client\InteractsWithClient;
-
-class AuthService
+class AuthService extends AbstractService
 {
-    use InteractsWithClient;
-
     /**
      *
      */
     public function user()
     {
-        return null;
+        return $this->request('get', 'me');
     }
 }

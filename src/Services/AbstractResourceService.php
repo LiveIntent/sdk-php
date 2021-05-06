@@ -4,13 +4,9 @@ namespace LiveIntent\Services;
 
 use LiveIntent\Resource;
 use LiveIntent\Exceptions;
-use LiveIntent\Client\InteractsWithClient;
 
-abstract class AbstractResourceService
+abstract class AbstractResourceService extends AbstractService
 {
-    use HandlesApiErrors;
-    use InteractsWithClient;
-
     /**
      * The resource's base url. Usually it will just be `/entity`.
      *
@@ -29,22 +25,20 @@ abstract class AbstractResourceService
      * Find a resource by its id.
      *
      * @param string|int $id
-     * @param array $opts
      * @return \LiveIntent\Resource
      */
-    public function find($id, $opts = [])
+    public function find($id)
     {
-        return $this->request('get', $this->resourceUrl($id), null, $opts);
+        return $this->request('get', $this->resourceUrl($id));
     }
 
     /**
      * Create a new resource.
      *
      * @param array|\stdClass|\LiveIntent\Resource $attributes
-     * @param array $opts
      * @return \LiveIntent\Resource
      */
-    public function create($attributes, $opts = [])
+    public function create($attributes)
     {
         $payload = (array) $attributes;
 
@@ -52,17 +46,16 @@ abstract class AbstractResourceService
             $payload = $attributes->getAttributes();
         }
 
-        return $this->request('post', $this->baseUrl, $payload, $opts);
+        return $this->request('post', $this->baseUrl, $payload);
     }
 
     /**
      * Update an existing resource.
      *
      * @param array|\stdClass|\LiveIntent\Resource $attributes
-     * @param array $opts
      * @return \LiveIntent\Resource
      */
-    public function update($attributes, $opts = [])
+    public function update($attributes)
     {
         $payload = (array) $attributes;
         $id = $payload['id'] ?? null;
@@ -76,7 +69,7 @@ abstract class AbstractResourceService
             throw Exceptions\InvalidArgumentException::factory($payload, 'Unable to find `id` for update operation');
         }
 
-        return $this->request('post', $this->resourceUrl($id), $payload, $opts);
+        return $this->request('post', $this->resourceUrl($id), $payload);
     }
 
     // /**
@@ -115,17 +108,16 @@ abstract class AbstractResourceService
     // }
 
     /**
-     * Make a request to the api.
+     * Send the request to the given URL.
      *
-     * @param null|array $params
-     * @param array $opts
-     * @return \LiveIntent\Resource
+     * @param string $method
+     * @param string $url
+     * @param array $options
+     * @return \Illuminate\Http\Client\Response
      */
-    protected function request(string $method, string $path, $params = null, $opts = [])
+    public function request(string $method, string $url, array $options = [])
     {
-        $response = $this->getClient()->request($method, $path, $params, $opts);
-
-        $this->handleErrors($response);
+        $response = parent::request($method, $url, $options);
 
         // TODO - handle multiple, handle other structures
         return $this->newResource($response->json()['output']);

@@ -28,8 +28,8 @@ class ServiceTestCase extends TestCase
 
         $client = $this->createClient();
 
-        $this->service = new $this->serviceClass();
-        $this->service->setClient($client);
+        $this->service = $client->{$this->serviceKey};
+        // $this->service->setClient($client);
     }
 
     /**
