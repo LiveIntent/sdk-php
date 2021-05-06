@@ -1,32 +1,15 @@
 <?php
 
-namespace LiveIntent\Client;
+namespace LiveIntent\Services\Concerns;
 
-use Illuminate\Http\Client\Factory as BaseFactory;
+use Illuminate\Support\Collection;
 use Illuminate\Http\Client\Request;
-use Illuminate\Support\Traits\ForwardsCalls;
+use LiveIntent\Exceptions\FileNotFoundException;
 use LiveIntent\Exceptions\StubNotFoundException;
 use LiveIntent\Exceptions\InvalidOptionException;
 
-class Factory extends BaseFactory
+trait MocksRequests
 {
-    use ForwardsCalls;
-
-    /**
-     * The default options to use when creating requests.
-     *
-     * @var array
-     */
-    private $requestOptions = [
-        'base_url' => null,
-        'client_id' => null,
-        'client_secret' => null,
-        'tries' => 1,
-        'retryDelay' => 100,
-        'timeout' => 10,
-        'guzzleOptions' => []
-    ];
-
     /**
      * Whether the request/response pairs should be stored for later use.
      *
@@ -42,19 +25,6 @@ class Factory extends BaseFactory
     private $recordingsFilepath = 'tests/__snapshots__/snapshot';
 
     /**
-     * Create a new instance.
-     *
-     * @return void
-     */
-    public function __construct(array $options = [])
-    {
-        $this->requestOptions = array_merge($this->requestOptions, $options);
-        $this->recordingsFilepath = $options['recordingsFilepath'] ?? $this->recordingsFilepath;
-
-        $this->stubCallbacks = collect();
-    }
-
-    /**
      * Instruct the client to use fake responses.
      *
      * @param  callable|array  $callback
@@ -62,11 +32,15 @@ class Factory extends BaseFactory
      */
     public function fake($callback = null)
     {
+        if ($this->tokenService) {
+            $this->tokenService->fake();
+        }
+
         if ($callback !== null) {
             return parent::fake($callback);
         }
 
-        return parent::fake(function (Request $request) {
+        parent::fake(function (Request $request) {
             if ($this->shouldSaveRecordings) {
                 throw new InvalidOptionException('Cannot use the `fake` option together with the `saveRecordings` option.');
             }
@@ -79,6 +53,10 @@ class Factory extends BaseFactory
 
             return $this->response($response['body'], $response['status'], $response['headers']);
         });
+
+        $this->pendingRequest()->stub($this->stubCallbacks);
+
+        return $this;
     }
 
     /**
@@ -86,9 +64,13 @@ class Factory extends BaseFactory
      *
      * @return $this
      */
-    public function record()
+    public function saveSnapshots()
     {
-        parent::record();
+        if ($this->tokenService) {
+            $this->tokenService->saveSnapshots();
+        }
+
+        $this->record();
 
         $this->shouldSaveRecordings = true;
 

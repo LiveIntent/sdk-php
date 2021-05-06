@@ -1,7 +1,8 @@
 <?php
 
-namespace LiveIntent\Services;
+namespace LiveIntent\Services\Concerns;
 
+use LiveIntent\Services\TokenService;
 use Illuminate\Http\Client\PendingRequest;
 
 trait AuthenticatesRequests

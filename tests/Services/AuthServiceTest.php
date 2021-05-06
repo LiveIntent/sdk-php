@@ -3,15 +3,21 @@
 namespace Tests\Services;
 
 use LiveIntent\User;
-use LiveIntent\Services\AuthService;
+use LiveIntent\Services\TokenService;
 
 class AuthServiceTest extends ServiceTestCase
 {
-    protected $serviceClass = AuthService::class;
+    protected $serviceKey = 'auth';
 
     public function testGetCurrentUserWithAccessToken()
     {
-        $user = $this->service->withToken($token)->user();
+        $tokenService = new TokenService([
+            'client_id' => env('CLIENT_ID'),
+            'client_secret' => env('CLIENT_SECRET'),
+            'base_url' => env('LI_BASE_URL', 'http://localhost:33001'),
+        ]);
+
+        $user = $this->service->withToken($tokenService->token())->user();
 
         $this->assertInstanceOf(User::class, $user);
 

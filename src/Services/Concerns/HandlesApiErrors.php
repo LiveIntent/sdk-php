@@ -1,6 +1,6 @@
 <?php
 
-namespace LiveIntent\Services;
+namespace LiveIntent\Services\Concerns;
 
 use LiveIntent\Exceptions;
 use Illuminate\Http\Client\Response;

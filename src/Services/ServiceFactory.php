@@ -62,7 +62,7 @@ class ServiceFactory
             $service->setTokenService($this->tokenService);
 
             if (data_get($this->options, 'shouldRecord')) {
-                $service->record();
+                $service->saveSnapshots();
             }
 
             if (data_get($this->options, 'shouldFake')) {
