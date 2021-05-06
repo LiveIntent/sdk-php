@@ -110,10 +110,12 @@ abstract class AbstractResourceService extends AbstractService
     /**
      * Send the request to the given URL.
      *
+     * @psalm-suppress ImplementedReturnTypeMismatch
+     *
      * @param string $method
      * @param string $url
      * @param array $options
-     * @return \Illuminate\Http\Client\Response
+     * @return \LiveIntent\Resource
      */
     public function request(string $method, string $url, array $options = [])
     {

@@ -2,7 +2,6 @@
 
 namespace LiveIntent\Services;
 
-use LiveIntent\Services\Concerns;
 use Illuminate\Http\Client\Factory;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Traits\ForwardsCalls;
@@ -96,7 +95,7 @@ abstract class AbstractService extends Factory
      */
     public function pendingRequest()
     {
-        if (!$this->pendingRequest) {
+        if (! $this->pendingRequest) {
             $this->pendingRequest = $this->newPendingRequest();
         }
 

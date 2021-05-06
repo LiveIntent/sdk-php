@@ -17,7 +17,7 @@ trait AuthenticatesRequests
     /**
      * Set the token service to use.
      *
-     * @param \LiveIntent\Services\TokenService
+     * @param \LiveIntent\Services\TokenService $tokenService
      * @return void
      */
     public function setTokenService(TokenService $tokenService)
@@ -30,8 +30,6 @@ trait AuthenticatesRequests
      *
      * @param PendingRequest $request
      * @return void
-     * @throws Exception
-     * @throws RequestException
      */
     protected function authenticateRequest(PendingRequest $request)
     {

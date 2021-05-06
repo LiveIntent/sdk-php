@@ -54,6 +54,7 @@ trait MocksRequests
             return $this->response($response['body'], $response['status'], $response['headers']);
         });
 
+        /** @psalm-suppress InvalidArgument */
         $this->pendingRequest()->stub($this->stubCallbacks);
 
         return $this;
@@ -178,7 +179,7 @@ trait MocksRequests
         $parts = [
             $request->method(),
             $request->url(),
-            $this->getNormalizedRequestData($request)
+            $this->getNormalizedRequestData($request),
         ];
 
         return hash('crc32b', collect($parts)->map('json_encode')->join(''));
