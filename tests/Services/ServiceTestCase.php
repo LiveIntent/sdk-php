@@ -8,11 +8,11 @@ use LiveIntent\LiveIntentClient;
 class ServiceTestCase extends TestCase
 {
     /**
-     * The service class under test.
+     * The factory key of the service class under test.
      *
      * @var string
      */
-    protected $serviceClass = null;
+    protected $serviceKey = null;
 
     /**
      * The service under test.
