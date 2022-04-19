@@ -25,12 +25,14 @@ class ServiceFactory
      * @var array<string, class-string>
      */
     protected static $classMap = [
+        'adSlots' => AdSlotService::class,
         'advertisers' => AdvertiserService::class,
         'auth' => AuthService::class,
         'campaigns' => CampaignService::class,
         'insertionOrders' => InsertionOrderService::class,
         'lineItems' => LineItemService::class,
         'mediaGroups' => MediaGroupService::class,
+        'newsletters' => NewsletterService::class,
         'publishers' => PublisherService::class,
         'users' => UserService::class,
 
