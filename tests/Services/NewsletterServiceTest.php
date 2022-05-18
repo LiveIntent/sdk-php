@@ -22,7 +22,7 @@ class NewsletterServiceTest extends ServiceTestCase
     public function testIsCreatableViaAttributesArray()
     {
         $newsletter = $this->service->create([
-            'name' => 'SDK Test',
+            'name' => 'SDK_Test',
             'publisher' => Fixtures::publisherHash(),
             'category' => 1,
         ]);
@@ -34,7 +34,7 @@ class NewsletterServiceTest extends ServiceTestCase
     public function testIsCreatableViaResourceInstance()
     {
         $newsletter = new Newsletter([
-            'name' => 'SDK Test',
+            'name' => 'SDK_Test',
             'publisher' => Fixtures::publisherHash(),
             'category' => 1,
         ]);
@@ -78,7 +78,7 @@ class NewsletterServiceTest extends ServiceTestCase
         $this->expectException(InvalidRequestException::class);
 
         $this->service->create([
-            'name' => 'SDK Test',
+            'name' => 'SDK_Test',
             'publisher' => Fixtures::publisherHash(),
         ]);
     }

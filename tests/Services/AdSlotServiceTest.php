@@ -22,7 +22,7 @@ class AdSlotServiceTest extends ServiceTestCase
     public function testIsCreatableViaAttributesArray()
     {
         $adSlot = $this->service->create([
-            'name' => 'SDK Test',
+            'name' => 'SDK_Test',
             'newsletter' => Fixtures::newsletterHash(),
             'type' => 'image',
             'mediaType' => 'newsletter',
@@ -44,7 +44,7 @@ class AdSlotServiceTest extends ServiceTestCase
     public function testIsCreatableViaResourceInstance()
     {
         $adSlot = new AdSlot([
-            'name' => 'SDK Test',
+            'name' => 'SDK_Test',
             'newsletter' => Fixtures::newsletterHash(),
             'type' => 'image',
             'mediaType' => 'newsletter',
@@ -106,7 +106,7 @@ class AdSlotServiceTest extends ServiceTestCase
         $this->expectException(InvalidRequestException::class);
 
         $this->service->create([
-            'name' => 'SDK Test',
+            'name' => 'SDK_Test',
             'newsletter' => Fixtures::newsletterHash(),
         ]);
     }

@@ -48,7 +48,7 @@ trait MocksRequests
 
             $response = $this->findMockedResponse($request);
 
-            if (!$response) {
+            if (! $response) {
                 throw StubNotFoundException::factory($request);
             }
 
