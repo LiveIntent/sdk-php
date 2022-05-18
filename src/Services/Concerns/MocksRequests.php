@@ -48,7 +48,7 @@ trait MocksRequests
 
             $response = $this->findMockedResponse($request);
 
-            if (! $response) {
+            if (!$response) {
                 throw StubNotFoundException::factory($request);
             }
 
@@ -188,18 +188,9 @@ trait MocksRequests
      */
     private function getNormalizedRequestData(Request $request)
     {
-        // Initialize data when not json
+        // $request->data() automatically does detect type of body and return values accordingly,
+        // so no need to manually parse body
         $data = $request->data();
-
-        if ($request->isJson()) {
-            // Turn request data into an array
-            $temp = json_decode((string) collect($request->data()), true);
-
-            $keys = array_keys($temp);
-
-            // Grab the first array key and json_decode it
-            $data = json_decode(reset($keys), true);
-        }
 
         $excludedKeys = ['version', 'client_id', 'client_secret'];
 
