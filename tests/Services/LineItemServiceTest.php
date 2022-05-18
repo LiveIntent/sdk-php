@@ -22,7 +22,7 @@ class LineItemServiceTest extends ServiceTestCase
     public function testIsCreatableViaAttributesArray()
     {
         $lineItem = $this->service->create([
-            'name' => 'SDK_Test',
+            'name' => 'SDK Test',
             'status' => 'paused',
             'budget' => 0,
             'pacing' => 'even',
@@ -36,7 +36,7 @@ class LineItemServiceTest extends ServiceTestCase
     public function testIsCreatableViaResourceInstance()
     {
         $lineItem = new LineItem([
-            'name' => 'SDK_Test',
+            'name' => 'SDK Test',
             'status' => 'paused',
             'budget' => 0,
             'pacing' => 'even',
@@ -80,7 +80,7 @@ class LineItemServiceTest extends ServiceTestCase
     public function testCanCreateOrUpdate()
     {
         $originalLineItem = $this->service->createOrUpdate([
-            'name' => 'SDK_Test_Create_or_Update',
+            'name' => 'SDK Test Create or Update',
             'status' => 'paused',
             'budget' => 0,
             'pacing' => 'even',
@@ -97,7 +97,7 @@ class LineItemServiceTest extends ServiceTestCase
     public function testIsDeletable()
     {
         $lineItem = $this->service->create([
-            'name' => 'SDK_Test_Delete',
+            'name' => 'SDK Test Delete',
             'status' => 'paused',
             'budget' => 0,
             'pacing' => 'even',
@@ -116,7 +116,7 @@ class LineItemServiceTest extends ServiceTestCase
         $this->expectException(InvalidRequestException::class);
 
         $this->service->create([
-            'name' => 'SDK_Test',
+            'name' => 'SDK Test',
             'budget' => 0,
             'pacing' => 'even',
             'campaign' => Fixtures::campaignHash(),
