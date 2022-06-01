@@ -143,7 +143,7 @@ class SearchQueryBuilder
     /**
      * Get the first result.
      *
-     * @return \LiveIntent\Resource
+     * @return null|\LiveIntent\Resource
      */
     public function first()
     {
