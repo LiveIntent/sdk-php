@@ -82,7 +82,7 @@ class AdSlotServiceTest extends ServiceTestCase
                     'floor' => 1.0,
                     'deviceTypes' => [1,2,3],
                 ],
-            ]
+            ],
         ]);
 
         $this->assertEquals($updatedName, $adSlot->name);
