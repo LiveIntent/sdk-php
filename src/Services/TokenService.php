@@ -122,7 +122,9 @@ class TokenService extends BaseService
     public function actAs(int $id)
     {
         $response = $this->pendingRequest()
-            ->asForm()->post('oauth/token', [
+            ->asForm()->withToken(
+                $this->token()
+            )->post('oauth/token', [
                 'client_id' => $this->clientId,
                 'client_secret' => $this->clientSecret,
                 'grant_type' => 'act_as',
