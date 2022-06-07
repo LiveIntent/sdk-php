@@ -4,7 +4,7 @@ on: pull_request
 
 jobs:
   php-cs-fixer:
-    name: php-cs check
+    name: run-lint
     runs-on: ubuntu-latest
     steps:
     - name: Checkout

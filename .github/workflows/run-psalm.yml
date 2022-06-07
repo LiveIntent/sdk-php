@@ -8,7 +8,7 @@ on:
 
 jobs:
   psalm:
-    name: psalm
+    name: run-analyze
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
