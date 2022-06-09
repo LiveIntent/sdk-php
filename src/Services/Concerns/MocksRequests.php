@@ -25,6 +25,14 @@ trait MocksRequests
      */
     private $recordingsFilepath = 'tests/__snapshots__/snapshot';
 
+
+    /**
+     * Flag to check whether snapshots are cleared
+     *
+     * @var bool
+     */
+    private static $snapshotsCleared = false;
+
     /**
      * Instruct the client to use fake responses.
      *
@@ -68,6 +76,16 @@ trait MocksRequests
      */
     public function saveSnapshots()
     {
+
+        // clear snapshots if it is not cleared and RECREATE_SNAPSHOTS=true
+        if (! self::$snapshotsCleared && env('RECREATE_SNAPSHOTS', false)) {
+            if (file_exists($this->recordingsFilepath)) {
+                file_put_contents($this->recordingsFilepath, '');
+                // mark snapshots cleared
+                self::$snapshotsCleared = true;
+            }
+        }
+
         if ($this->tokenService) {
             $this->tokenService->saveSnapshots();
         }
