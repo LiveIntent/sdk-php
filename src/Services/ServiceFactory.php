@@ -28,6 +28,7 @@ class ServiceFactory
         'adSlots' => AdSlotService::class,
         'advertisers' => AdvertiserService::class,
         'auth' => AuthService::class,
+        'gam' => GamService::class,
         'campaigns' => CampaignService::class,
         'insertionOrders' => InsertionOrderService::class,
         'lineItems' => LineItemService::class,

@@ -31,7 +31,7 @@ class AdSlotServiceTest extends ServiceTestCase
                     'width' => 500,
                     'height' => 600,
                     'floor' => 1.0,
-                    'deviceTypes' => [1,2,3],
+                    'deviceTypes' => [1, 2, 3],
                 ],
             ],
             'adIndicatorId' => 1,
@@ -53,7 +53,7 @@ class AdSlotServiceTest extends ServiceTestCase
                     'width' => 500,
                     'height' => 600,
                     'floor' => 1.0,
-                    'deviceTypes' => [1,2,3],
+                    'deviceTypes' => [1, 2, 3],
                 ],
             ],
             'adIndicatorId' => 1,
@@ -80,7 +80,7 @@ class AdSlotServiceTest extends ServiceTestCase
                     'width' => 500,
                     'height' => 600,
                     'floor' => 1.0,
-                    'deviceTypes' => [1,2,3],
+                    'deviceTypes' => [1, 2, 3],
                 ],
             ],
         ]);
@@ -99,6 +99,17 @@ class AdSlotServiceTest extends ServiceTestCase
 
         $this->assertEquals($updatedName, $adSlot->name);
         $this->assertInstanceOf(AdSlot::class, $adSlot);
+    }
+
+    public function testUpdateExternalUrl()
+    {
+        $adSlot = $this->service->find(Fixtures::adSlotId());
+        $gamService = $this->createService('gam');
+        $accountId = 123456;
+        $externalUrl = $gamService->getGamUrl($adSlot->refId, $accountId);
+        $adSlot->externalUrl = $externalUrl;
+        $adSlot = $this->service->update($adSlot);
+        $this->assertEquals($adSlot->externalUrl, $externalUrl);
     }
 
     public function testThrowsWhenInvalidDataIsPassed()

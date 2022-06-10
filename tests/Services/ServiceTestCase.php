@@ -32,6 +32,16 @@ class ServiceTestCase extends TestCase
     }
 
     /**
+     * Helps you generate service quickly
+     */
+    public function createService($serviceKey)
+    {
+        $client = $this->createClient();
+
+        return $client->{$serviceKey};
+    }
+
+    /**
      * Create the service client to use for the tests.
      *
      * @return \LiveIntent\Client\ClientInterface
