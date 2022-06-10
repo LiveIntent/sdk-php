@@ -80,18 +80,6 @@ trait MocksRequests
     }
 
     /**
-     * Clear snapshots file
-     *
-     * @return void
-     */
-    public function clearSnapShots()
-    {
-        if (file_exists($this->recordingsFilepath)) {
-            file_put_contents($this->recordingsFilepath, '');
-        }
-    }
-
-    /**
      * Find a response stub that matches the request.
      *
      * @return null|\Illuminate\Http\Client\Response

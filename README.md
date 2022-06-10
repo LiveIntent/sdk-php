@@ -144,18 +144,6 @@ The LiveIntent client inherits from Laravel's Http Client. Therefore, all the me
 
 For detailed documentation see [here](https://laravel.com/docs/8.x/http-client#testing).
 
-#### Recommendation on Testing: 
-
-We recommend, to re-generate stub file `tests/__snapshots__/snapshot` anytime a **test** is being added/modified. 
-
-To do so please run 
-
-**`composer test-record`**
-
-This will run tests against real server and record responses in stub file.
-
-**Note:** Currently this SDK do no support modifications in particular request/response recording which is already recorded in stub file `tests/__snapshots__/snapshot`.
-
 ## Development
 
 For information about how to contribute to this project please see

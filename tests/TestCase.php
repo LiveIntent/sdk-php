@@ -12,6 +12,5 @@ class TestCase extends PHPUnit
     public function setUp(): void
     {
         parent::setUp();
-        // Do something which should run for each test file (if needed), env variable loading is moved to bootstraping
     }
 }
