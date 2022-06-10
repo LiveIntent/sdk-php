@@ -2,6 +2,7 @@
 
 namespace Tests\Services;
 
+use Tests\Fixtures;
 use LiveIntent\Exceptions\InvalidRequestException;
 
 class GamServiceTest extends ServiceTestCase
@@ -10,7 +11,7 @@ class GamServiceTest extends ServiceTestCase
 
     public function testCreateGamUrl()
     {
-        $adSlotId = 834557;
+        $adSlotId = Fixtures::adSlotId();
         $googleAccountId = 123456;
         $gamUrl = $this->service->getGamUrl($adSlotId, $googleAccountId);
         $this->assertNotNull($gamUrl);
@@ -19,7 +20,7 @@ class GamServiceTest extends ServiceTestCase
     public function testThrowsWhenInvalidAccountIdIsPassed()
     {
         $this->expectException(InvalidRequestException::class);
-        $adSlotId = 834557;
+        $adSlotId = Fixtures::adSlotId();
         $googleAccountId = null;
         $this->service->getGamUrl($adSlotId, $googleAccountId);
     }

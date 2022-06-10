@@ -150,7 +150,7 @@ We recommend, to re-generate stub file `tests/__snapshots__/snapshot` anytime a 
 
 To do so please run 
 
-**`composer test-record-recreate`**
+**`composer test-record`**
 
 This will run tests against real server and record responses in stub file.
 

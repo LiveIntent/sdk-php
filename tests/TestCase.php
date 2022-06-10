@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use Dotenv\Dotenv;
 use PHPUnit\Framework\TestCase as PHPUnit;
 
 class TestCase extends PHPUnit
@@ -13,8 +12,6 @@ class TestCase extends PHPUnit
     public function setUp(): void
     {
         parent::setUp();
-
-        $dotenv = Dotenv::createImmutable(dirname(__DIR__));
-        $dotenv->safeLoad();
+        // Do something which should run for each test file (if needed), env variable loading is moved to bootstraping
     }
 }

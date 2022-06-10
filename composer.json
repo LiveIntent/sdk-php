@@ -41,8 +41,7 @@
         "lint": "vendor/bin/php-cs-fixer fix --allow-risky=yes",
         "test": "vendor/bin/phpunit",
         "test-watch": "vendor/bin/phpunit-watcher watch",
-        "test-record": "RECORD_SNAPSHOTS=true vendor/bin/phpunit",
-        "test-record-recreate": "RECORD_SNAPSHOTS=true RECREATE_SNAPSHOTS=true USE_SNAPSHOTS=false vendor/bin/phpunit",
+        "test-record": "RECORD_SNAPSHOTS=true USE_SNAPSHOTS=false vendor/bin/phpunit",
         "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
     },
     "config": {
