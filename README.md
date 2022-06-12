@@ -18,8 +18,8 @@ Simple usage looks like this:
 
 ```php
 $liveIntent = new \LiveIntent\LiveIntentClient([
-    'client_id' => '<your-client-id>',
-    'client_secret' => '<your-client-secret>',
+    'base_url' => 'http://localhost:6207',
+    'personal_access_token' => '<your-personal-access-token>',
 ]);
 
 $lineItem = $liveIntent->lineItems->find(123);

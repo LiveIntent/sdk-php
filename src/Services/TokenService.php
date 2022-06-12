@@ -71,6 +71,10 @@ class TokenService extends BaseService
      */
     public function token()
     {
+        if ($pat = data_get($this->options, 'personal_access_token')) {
+            return $pat;
+        }
+
         if ($this->needsNewTokens()) {
             $this->obtainTokens();
         }
