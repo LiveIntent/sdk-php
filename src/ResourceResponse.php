@@ -6,12 +6,12 @@ use Illuminate\Http\Client\Response;
 
 class ResourceResponse
 {
-    public Resource $resource;
-    public Response $rawResponse;
+    public Resource|null $resource;
+    public Response $response;
 
-    public function __construct(Resource $resource, Response $rawResponse)
+    public function __construct(Resource|null $resource, Response $rawResponse)
     {
         $this->resource = $resource;
-        $this->rawResponse = $rawResponse;
+        $this->response = $rawResponse;
     }
 }

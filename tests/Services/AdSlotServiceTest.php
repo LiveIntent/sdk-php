@@ -120,9 +120,9 @@ class AdSlotServiceTest extends ServiceTestCase
         $this->assertInstanceOf(ResourceResponse::class, $resp);
         $this->assertInstanceOf(AdSlot::class, $resp->resource);
         $this->assertEquals($updatedName, $resp->resource->name);
-        $this->assertIsArray($resp->rawResponse->headers());
-        $this->assertNotEmpty($resp->rawResponse->headers());
-        $this->assertNotNull($resp->rawResponse->body());
+        $this->assertIsArray($resp->response->headers());
+        $this->assertNotEmpty($resp->response->headers());
+        $this->assertNotNull($resp->response->body());
     }
 
     public function testIsUpdateableViaResourceInstance()
@@ -156,5 +156,22 @@ class AdSlotServiceTest extends ServiceTestCase
             'name' => 'SDK Test',
             'newsletter' => Fixtures::newsletterHash(),
         ]);
+    }
+
+    public function testExceptionNotThrownWhenKeepingRawResponse()
+    {
+        $options = new ResourceServiceOptions();
+        $options->withRawResponse();
+
+        $resp = $this->service->create([
+            'name' => 'SDK Test',
+            'newsletter' => Fixtures::newsletterHash(),
+        ], $options);
+
+        $this->assertInstanceOf(ResourceResponse::class, $resp);
+        $this->assertNull($resp->resource);
+        $this->assertIsArray($resp->response->headers());
+        $this->assertNotEmpty($resp->response->headers());
+        $this->assertNotNull($resp->response->body());
     }
 }

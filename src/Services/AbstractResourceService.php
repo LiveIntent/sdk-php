@@ -31,7 +31,7 @@ abstract class AbstractResourceService extends BaseService
      *
      * @param string|int $id
      * @param ResourceServiceOptions $options
-     * @return \LiveIntent\Resource|ResourceResponse
+     * @return \LiveIntent\Resource|ResourceResponse|null
      */
     public function find($id, ResourceServiceOptions $options = null)
     {
@@ -43,7 +43,7 @@ abstract class AbstractResourceService extends BaseService
      *
      * @param array|\stdClass|\LiveIntent\Resource $attributes
      * @param ResourceServiceOptions $options
-     * @return \LiveIntent\Resource|ResourceResponse
+     * @return \LiveIntent\Resource|ResourceResponse|null
      */
     public function create($attributes, ResourceServiceOptions $options = null)
     {
@@ -61,7 +61,7 @@ abstract class AbstractResourceService extends BaseService
      *
      * @param array|\stdClass|\LiveIntent\Resource $attributes
      * @param ResourceServiceOptions $options
-     * @return \LiveIntent\Resource|ResourceResponse
+     * @return \LiveIntent\Resource|ResourceResponse|null
      */
     public function update($attributes, ResourceServiceOptions $options = null)
     {
@@ -85,7 +85,7 @@ abstract class AbstractResourceService extends BaseService
      *
      * @param array|\stdClass|\LiveIntent\Resource $attributes
      * @param ResourceServiceOptions $options
-     * @return \LiveIntent\Resource|ResourceResponse
+     * @return \LiveIntent\Resource|ResourceResponse|null
      */
     public function createOrUpdate($attributes, ResourceServiceOptions $options = null)
     {
@@ -121,11 +121,13 @@ abstract class AbstractResourceService extends BaseService
     /**
      * Issue a raw request without mapping the response
      *
+     * @param ResourceServiceOptions $options
+     *
      * @return \Illuminate\Http\Client\Response
      */
-    public function requestRaw(string $method, string $url)
+    public function requestRaw(string $method, string $url, ResourceServiceOptions $options = null)
     {
-        return parent::request($method, $url);
+        return parent::request($method, $url, [], $options);
     }
 
     /**
@@ -169,12 +171,17 @@ abstract class AbstractResourceService extends BaseService
      * @param string $url
      * @param ResourceServiceOptions $options
      *
-     * @return \LiveIntent\Resource|ResourceResponse
+     * @return \LiveIntent\Resource|ResourceResponse|null
      */
     public function requestWithOptions(string $method, string $url, ResourceServiceOptions $options = null)
     {
-        $response = $this->requestRaw($method, $url);
-        $resource = $this->newResource($response->json()['output']);
+        $response = $this->requestRaw($method, $url, $options);
+        $json = $response->json();
+
+        $resource = null;
+        if (array_key_exists('output', $json)) {
+            $resource = $this->newResource($json['output']);
+        }
 
         if ($options && $options->keepRawResponse) {
             return new ResourceResponse($resource, $response);

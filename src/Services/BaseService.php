@@ -3,6 +3,7 @@
 namespace LiveIntent\Services;
 
 use Illuminate\Http\Client\Factory;
+use LiveIntent\ResourceServiceOptions;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Traits\ForwardsCalls;
 
@@ -84,17 +85,22 @@ class BaseService extends Factory
      * @param string $method
      * @param string $url
      * @param array $options
+     * @param ResourceServiceOptions $rsOptions
      * @return \Illuminate\Http\Client\Response
      */
-    public function request(string $method, string $url, array $options = [])
-    {
+    public function request(
+        string $method,
+        string $url,
+        array $options = [],
+        ResourceServiceOptions $rsOptions = null
+    ) {
         $request = tap($this->pendingRequest(), function ($request) {
             $this->authenticateRequest($request);
         });
 
         $response = $request->send($method, $url, $options);
 
-        $this->handleErrors($response);
+        $this->handleErrors($response, $rsOptions);
 
         return $response;
     }
