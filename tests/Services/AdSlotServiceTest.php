@@ -89,6 +89,35 @@ class AdSlotServiceTest extends ServiceTestCase
         $this->assertInstanceOf(AdSlot::class, $adSlot);
     }
 
+    public function testIsUpdateableViaAttributesArrayAndCanReturnRawResponse()
+    {
+        $adSlot = $this->service->find(Fixtures::adSlotId());
+
+        $updatedName = 'SDK_TEST_UPDATE_NAME';
+
+        $resp = $this->service->update(
+            [
+                'id' => $adSlot->id,
+                'version' => $adSlot->version,
+                'name' => $updatedName,
+                'sizes' => [
+                    [
+                        'width' => 500,
+                        'height' => 600,
+                        'floor' => 1.0,
+                        'deviceTypes' => [1, 2, 3],
+                    ],
+                ],
+            ],
+            ['keepRawResponse' => true],
+        );
+
+        $this->assertEquals($updatedName, $resp['resource']->name);
+        $this->assertInstanceOf(AdSlot::class, $resp['resource']);
+        $this->assertNotEmpty($resp['headers']);
+        $this->assertNotNull($resp['body']);
+    }
+
     public function testIsUpdateableViaResourceInstance()
     {
         $adSlot = $this->service->find(Fixtures::adSlotId());
