@@ -103,7 +103,7 @@ class BaseService extends Factory
      * Attach a json body to the request.
      *
      * @param array $data
-     * @return PendingRequest
+     * @return BaseService
      */
     public function withJson(array $data)
     {

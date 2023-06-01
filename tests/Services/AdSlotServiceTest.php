@@ -4,6 +4,8 @@ namespace Tests\Services;
 
 use Tests\Fixtures;
 use LiveIntent\AdSlot;
+use LiveIntent\ResourceResponse;
+use LiveIntent\ResourceServiceOptions;
 use LiveIntent\Exceptions\InvalidRequestException;
 
 class AdSlotServiceTest extends ServiceTestCase
@@ -95,6 +97,9 @@ class AdSlotServiceTest extends ServiceTestCase
 
         $updatedName = 'SDK_TEST_UPDATE_NAME';
 
+        $options = new ResourceServiceOptions();
+        $options->withRawResponse();
+
         $resp = $this->service->update(
             [
                 'id' => $adSlot->id,
@@ -109,13 +114,15 @@ class AdSlotServiceTest extends ServiceTestCase
                     ],
                 ],
             ],
-            ['keepRawResponse' => true],
+            $options,
         );
 
-        $this->assertEquals($updatedName, $resp['resource']->name);
-        $this->assertInstanceOf(AdSlot::class, $resp['resource']);
-        $this->assertNotEmpty($resp['headers']);
-        $this->assertNotNull($resp['body']);
+        $this->assertInstanceOf(ResourceResponse::class, $resp);
+        $this->assertInstanceOf(AdSlot::class, $resp->resource);
+        $this->assertEquals($updatedName, $resp->resource->name);
+        $this->assertIsArray($resp->rawResponse->headers());
+        $this->assertNotEmpty($resp->rawResponse->headers());
+        $this->assertNotNull($resp->rawResponse->body());
     }
 
     public function testIsUpdateableViaResourceInstance()
