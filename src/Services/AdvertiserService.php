@@ -5,9 +5,9 @@ namespace LiveIntent\Services;
 use LiveIntent\Advertiser;
 
 /**
- * @method \LiveIntent\Advertiser find($id)
- * @method \LiveIntent\Advertiser create($attributes)
- * @method \LiveIntent\Advertiser update($attributes)
+ * @method \LiveIntent\Advertiser find($id, $options = null)
+ * @method \LiveIntent\Advertiser create($attributes, $options = null)
+ * @method \LiveIntent\Advertiser update($attributes, $options = null)
  */
 class AdvertiserService extends AbstractResourceService
 {

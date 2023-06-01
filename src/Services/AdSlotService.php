@@ -5,9 +5,9 @@ namespace LiveIntent\Services;
 use LiveIntent\AdSlot;
 
 /**
- * @method \LiveIntent\AdSlot find($id)
- * @method \LiveIntent\AdSlot create($attributes)
- * @method \LiveIntent\AdSlot update($attributes)
+ * @method \LiveIntent\AdSlot find($id, $options = null)
+ * @method \LiveIntent\AdSlot create($attributes, $options = null)
+ * @method \LiveIntent\AdSlot update($attributes, $options = null)
  */
 class AdSlotService extends AbstractResourceService
 {

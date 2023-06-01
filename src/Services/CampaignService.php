@@ -5,9 +5,9 @@ namespace LiveIntent\Services;
 use LiveIntent\Campaign;
 
 /**
- * @method \LiveIntent\Campaign find($id)
- * @method \LiveIntent\Campaign create($attributes)
- * @method \LiveIntent\Campaign update($attributes)
+ * @method \LiveIntent\Campaign find($id, $options = null)
+ * @method \LiveIntent\Campaign create($attributes, $options = null)
+ * @method \LiveIntent\Campaign update($attributes, $options = null)
  */
 class CampaignService extends AbstractResourceService
 {

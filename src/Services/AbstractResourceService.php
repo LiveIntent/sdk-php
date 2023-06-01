@@ -98,7 +98,10 @@ abstract class AbstractResourceService extends BaseService
         }
 
         if ($id && empty($attributes['version'])) {
-            $payload['version'] = $this->find($id)->version;
+            $resource = $this->find($id);
+            if ($resource instanceof Resource) {
+                $payload['version'] = $resource->version;
+            }
         }
 
         return $this->withJson($payload)->requestWithOptions('post', $id ? $this->resourceUrl($id) : $this->baseUrl, $options);
@@ -108,7 +111,7 @@ abstract class AbstractResourceService extends BaseService
      * Delete a resource by its id.
      *
      * @param string|int $arg
-     * @return \LiveIntent\Resource
+     * @return \Illuminate\Http\Client\Response
      */
     public function delete($arg)
     {
