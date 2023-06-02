@@ -4,6 +4,7 @@ namespace Tests\Services;
 
 use Tests\Fixtures;
 use LiveIntent\AdSlot;
+use LiveIntent\Resource;
 use LiveIntent\ResourceResponse;
 use LiveIntent\ResourceServiceOptions;
 use LiveIntent\Exceptions\InvalidRequestException;
@@ -169,7 +170,7 @@ class AdSlotServiceTest extends ServiceTestCase
         ], $options);
 
         $this->assertInstanceOf(ResourceResponse::class, $resp);
-        $this->assertNull($resp->resource);
+        $this->assertInstanceOf(Resource::class, $resp->resource);
         $this->assertIsArray($resp->response->headers());
         $this->assertNotEmpty($resp->response->headers());
         $this->assertNotNull($resp->response->body());

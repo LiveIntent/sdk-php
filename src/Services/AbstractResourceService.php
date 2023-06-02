@@ -31,7 +31,7 @@ abstract class AbstractResourceService extends BaseService
      *
      * @param string|int $id
      * @param ResourceServiceOptions $options
-     * @return \LiveIntent\Resource|ResourceResponse|null
+     * @return \LiveIntent\Resource|ResourceResponse
      */
     public function find($id, ResourceServiceOptions $options = null)
     {
@@ -43,7 +43,7 @@ abstract class AbstractResourceService extends BaseService
      *
      * @param array|\stdClass|\LiveIntent\Resource $attributes
      * @param ResourceServiceOptions $options
-     * @return \LiveIntent\Resource|ResourceResponse|null
+     * @return \LiveIntent\Resource|ResourceResponse
      */
     public function create($attributes, ResourceServiceOptions $options = null)
     {
@@ -61,7 +61,7 @@ abstract class AbstractResourceService extends BaseService
      *
      * @param array|\stdClass|\LiveIntent\Resource $attributes
      * @param ResourceServiceOptions $options
-     * @return \LiveIntent\Resource|ResourceResponse|null
+     * @return \LiveIntent\Resource|ResourceResponse
      */
     public function update($attributes, ResourceServiceOptions $options = null)
     {
@@ -85,7 +85,7 @@ abstract class AbstractResourceService extends BaseService
      *
      * @param array|\stdClass|\LiveIntent\Resource $attributes
      * @param ResourceServiceOptions $options
-     * @return \LiveIntent\Resource|ResourceResponse|null
+     * @return \LiveIntent\Resource|ResourceResponse
      */
     public function createOrUpdate($attributes, ResourceServiceOptions $options = null)
     {
@@ -171,17 +171,15 @@ abstract class AbstractResourceService extends BaseService
      * @param string $url
      * @param ResourceServiceOptions $options
      *
-     * @return \LiveIntent\Resource|ResourceResponse|null
+     * @return \LiveIntent\Resource|ResourceResponse
      */
     public function requestWithOptions(string $method, string $url, ResourceServiceOptions $options = null)
     {
         $response = $this->requestRaw($method, $url, $options);
         $json = $response->json();
 
-        $resource = null;
-        if (array_key_exists('output', $json)) {
-            $resource = $this->newResource($json['output']);
-        }
+        $output = array_key_exists('output', $json) ? $json['output'] : [];
+        $resource = $this->newResource($output);
 
         if ($options && $options->keepRawResponse) {
             return new ResourceResponse($resource, $response);
