@@ -5,9 +5,9 @@ namespace LiveIntent\Services;
 use LiveIntent\LineItem;
 
 /**
- * @method \LiveIntent\LineItem find($id)
- * @method \LiveIntent\LineItem create($attributes)
- * @method \LiveIntent\LineItem update($attributes)
+ * @method \LiveIntent\LineItem find($id, $options = null)
+ * @method \LiveIntent\LineItem create($attributes, $options = null)
+ * @method \LiveIntent\LineItem update($attributes, $options = null)
  */
 class LineItemService extends AbstractResourceService
 {

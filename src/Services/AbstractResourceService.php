@@ -4,6 +4,8 @@ namespace LiveIntent\Services;
 
 use LiveIntent\Resource;
 use LiveIntent\Exceptions;
+use LiveIntent\ResourceResponse;
+use LiveIntent\ResourceServiceOptions;
 use Illuminate\Support\Traits\ForwardsCalls;
 
 abstract class AbstractResourceService extends BaseService
@@ -28,20 +30,22 @@ abstract class AbstractResourceService extends BaseService
      * Find a resource by its id.
      *
      * @param string|int $id
-     * @return \LiveIntent\Resource
+     * @param ResourceServiceOptions $options
+     * @return \LiveIntent\Resource|ResourceResponse
      */
-    public function find($id)
+    public function find($id, ResourceServiceOptions $options = null)
     {
-        return $this->request('get', $this->resourceUrl($id));
+        return $this->requestWithOptions('get', $this->resourceUrl($id), $options);
     }
 
     /**
      * Create a new resource.
      *
      * @param array|\stdClass|\LiveIntent\Resource $attributes
-     * @return \LiveIntent\Resource
+     * @param ResourceServiceOptions $options
+     * @return \LiveIntent\Resource|ResourceResponse
      */
-    public function create($attributes)
+    public function create($attributes, ResourceServiceOptions $options = null)
     {
         $payload = (array) $attributes;
 
@@ -49,16 +53,17 @@ abstract class AbstractResourceService extends BaseService
             $payload = $attributes->getAttributes();
         }
 
-        return $this->withJson($payload)->request('post', $this->baseUrl);
+        return $this->withJson($payload)->requestWithOptions('post', $this->baseUrl, $options);
     }
 
     /**
      * Update an existing resource.
      *
      * @param array|\stdClass|\LiveIntent\Resource $attributes
-     * @return \LiveIntent\Resource
+     * @param ResourceServiceOptions $options
+     * @return \LiveIntent\Resource|ResourceResponse
      */
-    public function update($attributes)
+    public function update($attributes, ResourceServiceOptions $options = null)
     {
         $payload = (array) $attributes;
         $id = $payload['id'] ?? null;
@@ -72,16 +77,17 @@ abstract class AbstractResourceService extends BaseService
             throw Exceptions\InvalidArgumentException::factory($payload, 'Unable to find `id` for update operation');
         }
 
-        return $this->withJson($payload)->request('post', $this->resourceUrl($id));
+        return $this->withJson($payload)->requestWithOptions('post', $this->resourceUrl($id), $options);
     }
 
     /**
      * Update an existing resource.
      *
      * @param array|\stdClass|\LiveIntent\Resource $attributes
-     * @return \LiveIntent\Resource
+     * @param ResourceServiceOptions $options
+     * @return \LiveIntent\Resource|ResourceResponse
      */
-    public function createOrUpdate($attributes)
+    public function createOrUpdate($attributes, ResourceServiceOptions $options = null)
     {
         $payload = (array) $attributes;
         $id = $payload['id'] ?? null;
@@ -92,31 +98,20 @@ abstract class AbstractResourceService extends BaseService
         }
 
         if ($id && empty($attributes['version'])) {
-            $payload['version'] = $this->find($id)->version;
+            $resource = $this->find($id);
+            if ($resource instanceof Resource) {
+                $payload['version'] = $resource->version;
+            }
         }
 
-        return $this->withJson($payload)->request('post', $id ? $this->resourceUrl($id) : $this->baseUrl);
+        return $this->withJson($payload)->requestWithOptions('post', $id ? $this->resourceUrl($id) : $this->baseUrl, $options);
     }
-
-    // /**
-    //  */
-    // public function createMany($attributeGroups)
-    // {
-    //     //
-    // }
-
-    // /**
-    //  */
-    // public function updateMany($attributeGroups)
-    // {
-    //     //
-    // }
 
     /**
      * Delete a resource by its id.
      *
      * @param string|int $arg
-     * @return \LiveIntent\Resource
+     * @return \Illuminate\Http\Client\Response
      */
     public function delete($arg)
     {
@@ -124,13 +119,15 @@ abstract class AbstractResourceService extends BaseService
     }
 
     /**
-     * Issue a raw request without mapping the respon.se
+     * Issue a raw request without mapping the response
+     *
+     * @param ResourceServiceOptions $options
      *
      * @return \Illuminate\Http\Client\Response
      */
-    public function requestRaw(string $method, string $url, array $options = [])
+    public function requestRaw(string $method, string $url, ResourceServiceOptions $options = null)
     {
-        return parent::request($method, $url, $options);
+        return parent::request($method, $url, [], $options);
     }
 
     /**
@@ -172,15 +169,23 @@ abstract class AbstractResourceService extends BaseService
      *
      * @param string $method
      * @param string $url
-     * @param array $options
+     * @param ResourceServiceOptions $options
      *
-     * @return \LiveIntent\Resource
+     * @return \LiveIntent\Resource|ResourceResponse
      */
-    public function request(string $method, string $url, array $options = [])
+    public function requestWithOptions(string $method, string $url, ResourceServiceOptions $options = null)
     {
         $response = $this->requestRaw($method, $url, $options);
+        $json = $response->json();
 
-        return $this->newResource($response->json()['output']);
+        $output = array_key_exists('output', $json) ? $json['output'] : [];
+        $resource = $this->newResource($output);
+
+        if ($options && $options->keepRawResponse) {
+            return new ResourceResponse($resource, $response);
+        }
+
+        return $resource;
     }
 
     /**

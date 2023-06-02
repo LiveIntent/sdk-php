@@ -4,6 +4,9 @@ namespace Tests\Services;
 
 use Tests\Fixtures;
 use LiveIntent\AdSlot;
+use LiveIntent\Resource;
+use LiveIntent\ResourceResponse;
+use LiveIntent\ResourceServiceOptions;
 use LiveIntent\Exceptions\InvalidRequestException;
 
 class AdSlotServiceTest extends ServiceTestCase
@@ -89,6 +92,40 @@ class AdSlotServiceTest extends ServiceTestCase
         $this->assertInstanceOf(AdSlot::class, $adSlot);
     }
 
+    public function testIsUpdateableViaAttributesArrayAndCanReturnRawResponse()
+    {
+        $adSlot = $this->service->find(Fixtures::adSlotId());
+
+        $updatedName = 'SDK_TEST_UPDATE_NAME';
+
+        $options = new ResourceServiceOptions();
+        $options->withRawResponse();
+
+        $resp = $this->service->update(
+            [
+                'id' => $adSlot->id,
+                'version' => $adSlot->version,
+                'name' => $updatedName,
+                'sizes' => [
+                    [
+                        'width' => 500,
+                        'height' => 600,
+                        'floor' => 1.0,
+                        'deviceTypes' => [1, 2, 3],
+                    ],
+                ],
+            ],
+            $options,
+        );
+
+        $this->assertInstanceOf(ResourceResponse::class, $resp);
+        $this->assertInstanceOf(AdSlot::class, $resp->resource);
+        $this->assertEquals($updatedName, $resp->resource->name);
+        $this->assertIsArray($resp->response->headers());
+        $this->assertNotEmpty($resp->response->headers());
+        $this->assertNotNull($resp->response->body());
+    }
+
     public function testIsUpdateableViaResourceInstance()
     {
         $adSlot = $this->service->find(Fixtures::adSlotId());
@@ -120,5 +157,22 @@ class AdSlotServiceTest extends ServiceTestCase
             'name' => 'SDK Test',
             'newsletter' => Fixtures::newsletterHash(),
         ]);
+    }
+
+    public function testExceptionNotThrownWhenKeepingRawResponse()
+    {
+        $options = new ResourceServiceOptions();
+        $options->withRawResponse();
+
+        $resp = $this->service->create([
+            'name' => 'SDK Test',
+            'newsletter' => Fixtures::newsletterHash(),
+        ], $options);
+
+        $this->assertInstanceOf(ResourceResponse::class, $resp);
+        $this->assertInstanceOf(Resource::class, $resp->resource);
+        $this->assertIsArray($resp->response->headers());
+        $this->assertNotEmpty($resp->response->headers());
+        $this->assertNotNull($resp->response->body());
     }
 }

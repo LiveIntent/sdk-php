@@ -135,4 +135,9 @@ abstract class AbstractClient
 
         return $this->serviceFactory->make($name, $this->options);
     }
+
+    public function getOptions(): array
+    {
+        return $this->options;
+    }
 }

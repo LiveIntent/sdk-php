@@ -4,19 +4,22 @@ namespace LiveIntent\Services\Concerns;
 
 use LiveIntent\Exceptions;
 use Illuminate\Http\Client\Response;
+use LiveIntent\ResourceServiceOptions;
 
 trait HandlesApiErrors
 {
     /**
      * Check for api errors and handle them accordingly.
      *
+     * @param ResourceServiceOptions $rsOptions
+     *
      * @throws \LiveIntent\Exceptions\AbstractRequestException
      *
      * @return void
      */
-    private function handleErrors(Response $response)
+    private function handleErrors(Response $response, ResourceServiceOptions $options = null)
     {
-        if ($response->successful()) {
+        if ($response->successful() || ($options && $options->keepRawResponse)) {
             return;
         }
 

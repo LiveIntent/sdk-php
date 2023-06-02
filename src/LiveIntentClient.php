@@ -7,12 +7,16 @@ use LiveIntent\Client\AbstractClient;
 /**
  * Client used to interact with the LiveIntent Api.
  *
+ * @property \LiveIntent\Services\AdSlotService $adSlots
  * @property \LiveIntent\Services\AdvertiserService $advertisers
  * @property \LiveIntent\Services\AuthService $auth
  * @property \LiveIntent\Services\CampaignService $campaigns
  * @property \LiveIntent\Services\InsertionOrderService $insertionOrders
  * @property \LiveIntent\Services\LineItemService $lineItems
+ * @property \LiveIntent\Services\MediaGroupService $mediaGroups
  * @property \LiveIntent\Services\NewsletterService $newsletters
+ * @property \LiveIntent\Services\PublisherService $publishers
+ * @property \LiveIntent\Services\UserService $users
  *
  * @property \LiveIntent\Services\BaseService $request
  */
