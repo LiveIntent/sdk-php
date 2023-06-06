@@ -5,9 +5,9 @@ namespace LiveIntent\Services;
 use LiveIntent\Publisher;
 
 /**
- * @method \LiveIntent\Publisher find($id, $options = null)
- * @method \LiveIntent\Publisher create($attributes, $options = null)
- * @method \LiveIntent\Publisher update($attributes, $options = null)
+ * @method \LiveIntent\Publisher|\LiveIntent\ResourceResponse find($id, $options = null)
+ * @method \LiveIntent\Publisher|\LiveIntent\ResourceResponse create($attributes, $options = null)
+ * @method \LiveIntent\Publisher|\LiveIntent\ResourceResponse update($attributes, $options = null)
  */
 class PublisherService extends AbstractResourceService
 {

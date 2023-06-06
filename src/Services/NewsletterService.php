@@ -5,9 +5,9 @@ namespace LiveIntent\Services;
 use LiveIntent\Newsletter;
 
 /**
- * @method \LiveIntent\Newsletter find($id, $options = null)
- * @method \LiveIntent\Newsletter create($attributes, $options = null)
- * @method \LiveIntent\Newsletter update($attributes, $options = null)
+ * @method \LiveIntent\Newsletter|\LiveIntent\ResourceResponse find($id, $options = null)
+ * @method \LiveIntent\Newsletter|\LiveIntent\ResourceResponse create($attributes, $options = null)
+ * @method \LiveIntent\Newsletter|\LiveIntent\ResourceResponse update($attributes, $options = null)
  */
 class NewsletterService extends AbstractResourceService
 {
