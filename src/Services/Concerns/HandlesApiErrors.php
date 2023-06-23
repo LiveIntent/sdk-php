@@ -43,11 +43,10 @@ trait HandlesApiErrors
                 return Exceptions\AuthorizationException::factory($response);
             case 404:
             case 410:
+            case 429:
                 return Exceptions\NotFoundException::factory($response);
             case 409:
                 return Exceptions\ConflictException::factory($response);
-            case 429:
-                return Exceptions\NotFoundException::factory($response);
             case 500:
             case 502:
             case 503:

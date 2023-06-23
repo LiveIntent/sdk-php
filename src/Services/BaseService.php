@@ -87,6 +87,7 @@ class BaseService extends Factory
      * @param array $options
      * @param ResourceServiceOptions $rsOptions
      * @return \Illuminate\Http\Client\Response
+     * @throws \Exception
      */
     public function request(
         string $method,
@@ -94,13 +95,29 @@ class BaseService extends Factory
         array $options = [],
         ResourceServiceOptions $rsOptions = null
     ) {
+        /** @var PendingRequest $request */
         $request = tap($this->pendingRequest(), function ($request) {
             $this->authenticateRequest($request);
         });
 
-        $response = $request->send($method, $url, $options);
+        if ($rsOptions?->manuallyHandleRequestErrors) {
+            // Execute as a promise so an exception is not thrown from PendingRequest
+            // when the request fails
+            $response = $request->async()
+                ->send($method, $url, $options)
+                ->then(function ($response) use ($rsOptions) {
+                    $this->handleErrors($response, $rsOptions);
+                    return $response;
+                })->wait();
+        }
+        else {
+            // PendingRequest throws an exception when running as a non-promise
+            // This was kept for backwards compatibility as we are not sure
+            // what other projects are using this library
+            $response = $request->send($method, $url, $options);
 
-        $this->handleErrors($response, $rsOptions);
+            $this->handleErrors($response, $rsOptions);
+        }
 
         return $response;
     }
