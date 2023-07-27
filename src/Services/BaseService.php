@@ -103,9 +103,13 @@ class BaseService extends Factory
         if ($rsOptions?->manuallyHandleRequestErrors) {
             // Execute as a promise so an exception is not thrown from PendingRequest
             // when the request fails
+            // However this will throw exceptions for an invalid request body, or connection issues
             $response = $request->async()
                 ->send($method, $url, $options)
                 ->then(function ($response) use ($rsOptions) {
+                    if ($response instanceof \Throwable) {
+                        throw $response;
+                    }
                     $this->handleErrors($response, $rsOptions);
                     return $response;
                 })->wait();
