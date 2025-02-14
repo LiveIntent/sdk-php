@@ -135,7 +135,7 @@ abstract class AbstractResourceService extends BaseService
      *
      * @return \stdClass
      */
-    public function searchRaw(array $payload, array $options = [])
+    public function searchRaw(array $payload, array $options = null)
     {
         $response = $this->withJson($payload)->requestRaw(
             'post',
@@ -151,7 +151,7 @@ abstract class AbstractResourceService extends BaseService
      *
      * @return \Illuminate\Support\Collection
      */
-    public function search(array $payload, array $options = [])
+    public function search(array $payload, array $options = null)
     {
         $results = data_get(
             $this->searchRaw($payload, $options),
